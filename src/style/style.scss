@@ -1,0 +1,76 @@
+@import '../skymath-common/style/common';
+
+.admin-app {
+    background: transparent url("../img/skymath-bg.png") repeat-x 0 40px;
+}
+
+.app-min-height {
+    min-height: 500px;
+}
+
+.header-image {
+    padding: 10px 0;
+}
+
+.main-container {
+    background: transparent url("../img/rect-blue-50pct.png") repeat;
+}
+
+// Menu Styling
+.top-menu {
+    text-align: right;
+    margin: 10px 40px 0 0;
+}
+
+    .menu-item {
+        display: inline-block;
+        margin-right: 80px;
+        background-color: $darkGray;
+        color: white;
+        width: 180px;
+        padding: 10px 0;
+        text-align: center;
+        margin: 0 1px;
+        text-transform: uppercase;
+
+        &:hover {
+            background-color: $activeBlue;
+            cursor: pointer;
+        }
+
+        &.menu-subitem {
+            display: block;
+        }
+    }
+
+.sub-menu {
+    position: absolute;
+    right: 40px;
+}
+
+.footer {
+    background-color: $darkGray;
+
+}
+
+.fieldset {
+    &.inline-fields {
+        .label, .field {
+            display: inline-block;
+            padding: 20px;
+        }
+
+        margin: 5px 0;
+    }
+}
+
+.field {
+    &.read-only {
+        background: transparent url("../img/rect-blue-50pct.png") repeat;
+    }
+
+    &.field--fixedwidth {
+        width: 25%;
+        min-width: 140px;
+    }
+}
