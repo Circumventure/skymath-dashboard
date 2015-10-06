@@ -17,32 +17,49 @@ var Menu = React.createClass({
 
     render: function() {
 
+        var adminSubmenuItemData = [
+            {
+                label: 'Test Questions',
+                value: 'test-questions'
+            },
+            {
+                label: 'Videos',
+                value: 'videos'
+            },
+            {
+                label: 'Apps',
+                value: 'apps'
+            },
+            {
+                label: 'Island Detail',
+                value: 'island-detail'
+            },
+
+        ];
+
+        var adminSubmenuItems = adminSubmenuItemData.map(function(data) {
+            return (
+                <li className="menu-subitem menu-item">
+                    <button value={data.value} className="menu-label" onClick={this.handleMenuItemClick}>{data.label}</button>
+                </li>
+            );
+        }.bind(this));
+
         return (
             <div className="line" style={{visibility: this.state.menuVisibility}}>
                 <div className="box">
                     <ul className="top-menu">
                         <li className="menu-item">
-                            <p className="menu-label">Menu</p>
+                            <button className="menu-label">Menu</button>
                         </li>
                         <li className="menu-item">
-                            <p className="menu-label">User Info</p>
+                            <button className="menu-label">User Info</button>
                         </li>
                         <li className="menu-item" onMouseOver={this.handleMouseOver} onMouseOut={this.handleMouseOut}>
-                            <p className="menu-label">Admin</p>
+                            <button className="menu-label">Admin</button>
                         </li>
                         <ul className={this.state.subMenuVisibility + " sub-menu"} onMouseOver={this.handleMouseOver} onMouseOut={this.handleMouseOut}>
-                            <li className="menu-subitem menu-item">
-                                <p className="menu-label">Test Questions</p>
-                            </li>
-                            <li className="menu-subitem menu-item">
-                                <p className="menu-label">Videos</p>
-                            </li>
-                            <li className="menu-subitem menu-item">
-                                <p className="menu-label">Apps</p>
-                            </li>
-                            <li className="menu-subitem menu-item">
-                                <p className="menu-label">Island Detail</p>
-                            </li>
+                            {adminSubmenuItems}
                         </ul>
                     </ul>
                 </div>
@@ -72,6 +89,11 @@ var Menu = React.createClass({
                 menuVisibility: 'visible'
             });
         }
+    },
+
+    handleMenuItemClick: function(event) {
+        var value = event.target.value;
+        Utils.Dispatcher.dispatch('change-main-component', {page: event.target.value});
     }
 });
 

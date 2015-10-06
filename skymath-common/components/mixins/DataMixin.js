@@ -73,8 +73,7 @@ var DataMixin = {
                 this.handleErrorFunc(args.errorFn, data, status, xhr);
             }.bind(this),
             headers: {
-                "x-access-token": Utils.Store.get().token,
-                "x-key": Utils.Store.get().username    
+                "authorization": "Basic U2t5TWF0aDpTa3kkJCQxMjMhQE1hdGg="
             }
         });
     },
@@ -95,6 +94,18 @@ var DataMixin = {
     },
 
     registerUser: function() {},
+
+    getIslandData: function(skillName, successFn, errorFn) {
+        this.ajaxCall({
+            method: 'POST',
+            data: {
+                request: 'get_island_data',
+                skill_name: skillName
+            },
+            successFn: successFn,
+            errorFn: errorFn
+        })
+    },
 
     getRecordFromStore: function(id, listName) {
         var store = Utils.Store.state[listName];

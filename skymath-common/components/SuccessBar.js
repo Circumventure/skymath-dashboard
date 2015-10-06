@@ -5,11 +5,13 @@ var Utils = require('Utils');
 var SuccessBar = React.createClass({
     componentWillMount: function() {
         Utils.Dispatcher.register('success-message', [], this.handleIncomingMessage);
+    },
 
-        this.setState({
+    getInitialState: function() {
+        return {
             message: null,
             hidden: "hidden"
-        });
+        };
     },
 
     render: function() {

@@ -5,11 +5,13 @@ var Utils = require('Utils');
 var ErrorBar = React.createClass({
     componentWillMount: function() {
         Utils.Dispatcher.register('error-message', [], this.handleIncomingMessage);
+    },
 
-        this.setState({
+    getInitialState: function() {
+        return {
             message: null,
             hidden: "hidden"
-        });
+        };
     },
 
     render: function() {

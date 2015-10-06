@@ -41,6 +41,14 @@
         &.menu-subitem {
             display: block;
         }
+
+        .menu-label {
+            background-color: transparent;
+            border: 0;
+            padding: 0;
+            margin: 0;
+            text-transform: uppercase;
+        }
     }
 
 .sub-menu {

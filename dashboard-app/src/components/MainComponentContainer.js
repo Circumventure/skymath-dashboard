@@ -2,6 +2,7 @@ var React = require('react');
 
 var LoginForm = require('LoginForm');
 var LoggedInHome = require('LoggedInHome');
+var IslandDetail = require('IslandDetail');
 var FormMixin = require('FormMixin');
 var Utils = require('Utils');
 
@@ -10,6 +11,10 @@ var MainComponentContainer = React.createClass({
 
     componentDidMount: function() {
         Utils.Dispatcher.register('change-main-component', [], this.handleEvent);
+    },
+
+    getInitialState: function() {
+        return { page: 'signout' };
     },
 
     render: function() {
@@ -21,8 +26,11 @@ var MainComponentContainer = React.createClass({
                     <LoggedInHome />
                 );
                 break;
+            case "island-detail":
+                return (
+                    <IslandDetail />
+                );
             case "signout":
-            default:
                 // Remove onbeforeunload handler when logged out
                 window.onbeforeunload = null;
                 return (
@@ -32,6 +40,10 @@ var MainComponentContainer = React.createClass({
                     </div>
                 );
                 break;
+            default:
+                return (
+                    <div>Error, unrecognized page destination.</div>
+                );
             }
         }.bind(this);
 
