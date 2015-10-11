@@ -95,7 +95,7 @@ var DataMixin = {
 
     registerUser: function() {},
 
-    getIslandData: function(skillName, successFn, errorFn) {
+    getIslandDataForSkillName: function(skillName, successFn, errorFn) {
         this.ajaxCall({
             method: 'POST',
             data: {
@@ -107,15 +107,26 @@ var DataMixin = {
         })
     },
 
-    getRecordFromStore: function(id, listName) {
-        var store = Utils.Store.state[listName];
-        if (store && store.length) {
-            for (var i = 0; i < store.length; i++) {
-                if (id === store[i].id) {
-                    return store[i];
-                }
-            }
-        }
+    getIslands: function(successFn, errorFn) {
+        this.ajaxCall({
+            method: 'POST',
+            data: {
+                request: 'get_islands'
+            },
+            successFn: successFn,
+            errorFn: errorFn
+        })
+    },
+
+    getStatistics: function(successFn, errorFn) {
+        this.ajaxCall({
+            method: 'POST',
+            data: {
+                request: 'get_statistics'
+            },
+            successFn: successFn,
+            errorFn: errorFn
+        });
     }
 };
 

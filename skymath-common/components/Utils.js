@@ -2,30 +2,38 @@ var MicroEvent = require('microevent');
 var Dispatcher = require('Dispatcher');
 
 module.exports = {};
-module.exports.Store = {
-    state: {},
+var storeInstance, dispatcherInstance, Store = function() {
+    this._store = {};
 
-    add: function(newProps) {
-        for (key in newProps) {
-           this.state[key] = newProps[key];
+    this.addDataToStore = function(data, storeName) {
+        if (!storeName) {
+            throw Error('storeName is required')
         }
-        return this.state;  
-    },
 
-    remove: function(key) {
-        if (this.state[key]) {
-            delete this.state[key];
-            return this.state;
+        if (this._store[storeName] === undefined) {
+            this._store[storeName] = data;
+            return this._store;
+        }
+
+        // Performs a deep copy merge of named store with the provided data.
+        return $.extend(true, this._store[storeName], data);
+    };
+
+    this.removeStore = function(storeName) {
+        if (this._store[storeName]) {
+            delete this._store[storeName];
+            return this._store;
         }
         return false;
-    },
+    };
 
-    get: function() {
-        return this.state;
-    }
+    this.getStore = function(storeName) {
+        return this._store[storeName];
+    };
 };
 
-module.exports.Dispatcher = new Dispatcher();
+dispatcherInstance = module.exports.Dispatcher = new Dispatcher();
+storeInstance = module.exports.Store = new Store();
 
 MicroEvent.mixin(module.exports.Store);
 
@@ -33,13 +41,13 @@ MicroEvent.mixin(module.exports.Store);
  * Ways to update the store
  */
 
-module.exports.Dispatcher.register('new-item', [], function(data) {
-    module.exports.Store.add(data);
-    module.exports.Store.trigger('change');
+dispatcherInstance.register('new-item', [], function(data) {
+    storeInstance.addDataToStore(data.data, data.storeName);
+    dispatcherInstance.dispatch(data.storeName + '-change', storeInstance.getStore(data.storeName));
 });
 
-module.exports.Dispatcher.register('remove-item', [], function(data) {
-    if (module.exports.Store.remove(data)) {
-        module.exports.Store.trigger('change');    
-    }
+dispatcherInstance.register('remove-store', [], function(data) {
+    if (storeInstance.removeStore(data.storeName)) {
+        storeInstance.trigger(data.storeName + '-remove');
+      }
 });
