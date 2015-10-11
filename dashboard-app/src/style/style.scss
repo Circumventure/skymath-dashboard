@@ -1,5 +1,22 @@
 @import '../skymath-common/style/common';
 
+.h2, .h3 {
+    color: black;
+    line-height: 1.1em;
+    margin: 5px 0;
+}
+
+.h2 {
+    font-size: 1.5em;
+    font-weight: 500;
+}
+
+.h3 {
+    font-size: 1.2em;
+    text-transform: none;
+    font-weight: 300;
+}
+
 .admin-app {
     background: transparent url("../img/skymath-bg.png") repeat-x 0 40px;
 }
@@ -8,8 +25,24 @@
     min-height: 500px;
 }
 
+.header {
+    display: table-row;
+}
+
 .header-image {
-    padding: 10px 0;
+    width: 350px;
+    display: table-cell;
+}
+
+    .header-image__img {
+        padding: 10px 0;
+    }
+
+.header-title {
+
+    vertical-align: bottom !important;
+    padding: 0 0 20px 20px;
+    display: table-cell;
 }
 
 .main-container {
