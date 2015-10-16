@@ -17,6 +17,10 @@
     font-weight: 300;
 }
 
+input {
+    color: black;
+}
+
 .admin-app {
     background: transparent url("../img/skymath-bg.png") repeat-x 0 40px;
 }
@@ -114,4 +118,8 @@
         width: 25%;
         min-width: 140px;
     }
+}
+
+.IslandDetail input[type=text] {
+    width: 90%
 }

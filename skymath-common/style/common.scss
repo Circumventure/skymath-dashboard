@@ -122,9 +122,8 @@ $activeBlue: #3fa1bc;
 .label {
 
     color: white;
-    font-size: 18px;
+    font-size: 22px;
     margin: 20px 0 10px 0;
-    text-transform: uppercase;
 
     &.label--block {
         display: block;
@@ -212,6 +211,11 @@ $activeBlue: #3fa1bc;
 
     &.button--block {
         display: block;
+    }
+
+    &.button--inline {
+        display: inline-block;
+        margin-right: 15px;
     }
 
     &.button--inline-right {

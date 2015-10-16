@@ -2,7 +2,7 @@ var React = require('react');
 
 var LoginForm = require('LoginForm');
 var LoggedInHome = require('LoggedInHome');
-var IslandDetail = require('IslandDetail');
+var IslandOverview = require('IslandOverview');
 var FormMixin = require('FormMixin');
 var Utils = require('Utils');
 
@@ -18,7 +18,6 @@ var MainComponentContainer = React.createClass({
     },
 
     render: function() {
-
         var currentComponent = function() {
             switch(this.state && this.state.page) {
             case "home":
@@ -28,7 +27,7 @@ var MainComponentContainer = React.createClass({
                 break;
             case "island-detail":
                 return (
-                    <IslandDetail />
+                    <IslandOverview />
                 );
             case "signout":
                 // Remove onbeforeunload handler when logged out
@@ -60,7 +59,8 @@ var MainComponentContainer = React.createClass({
         this.setState({
             page: data.page,
             data: data.data
-        })
+        });
+        this.clearAllMessages();
     }
 });
 

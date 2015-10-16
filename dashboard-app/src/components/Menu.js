@@ -39,8 +39,8 @@ var Menu = React.createClass({
 
         var adminSubmenuItems = adminSubmenuItemData.map(function(data) {
             return (
-                <li className="menu-subitem menu-item">
-                    <button value={data.value} className="menu-label" onClick={this.handleMenuItemClick}>{data.label}</button>
+                <li className="menu-subitem menu-item" onClick={this.handleMenuItemClick}>
+                    <button value={data.value} className="menu-label">{data.label}</button>
                 </li>
             );
         }.bind(this));

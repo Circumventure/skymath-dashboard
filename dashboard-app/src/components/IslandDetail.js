@@ -1,198 +1,92 @@
 var React = require('react');
-var Radium = require('radium');
-var Style = Radium.Style;
 
 var Utils = require('Utils');
 var DataMixin = require('DataMixin');
-var InputSelect = require('InputSelect');
+var InputText = require('InputText');
 
 var IslandDetail = React.createClass({
     mixins: [DataMixin],
 
-    componentWillMount: function() {
-        if (!Utils.Store.getStore('islandList')) {
-            this.getIslands(this.islandDataSuccess, this.islandDataError);    
-        } else {
-            this.loadData(Utils.Store.getStore('islandList'));
-        }
-        
-        Utils.Dispatcher.register('islandList-change', [], this.handleListChange);
-        Utils.Dispatcher.dispatch('change-header-title', {
-            title: 'Islands:',
-            subtitle: 'Edit or add Islands'
-        });
-    },
-
-    componentWillUnmount: function() {
-        Utils.Dispatcher.dispatch('change-header-title', {
-            title: '',
-            subtitle: ''
-        });
-    },
-
     getInitialState: function() {
         return {
-            islandList: [],
-            selectedIsland: null,
-            selectedGrade: null
+            data: {
+                'domain': '',
+                'curator_initials': '',
+                'standards': '',
+                'parent_friendly_descriptions': '',
+                'clean_name': '',
+                'announce_sound': '',
+                'domain': '',
+                'grade': '',
+                'video1_title': '',
+                'video1_link': '',
+                'video_notes': '',
+                'video2_title': '',
+                'video2_link': '',
+                'video2_notes': '',
+                'video3_title': '',
+                'video3_notes': '',
+                'video4_title': '',
+                'video4_link': '',
+                'video4_notes': '',
+                'total_cost_of_3_apps': '',
+                'total_cost_of_4_apps': '',
+                'app1_name': '',
+                'app1_icon_url': '',
+                'app1_link': '',
+                'app2_price': '',
+                'app2_notes': '',
+                'app2_video': '',
+                'app3_name': '',
+                'app3_icon_url': '',
+                'app3_link': '',
+                'app3_price': '',
+                'app3_notes': '',
+                'app3_video': '',
+                'app4_name': '',
+                'app4_icon_url': '',
+                'app4_link': '',
+                'app4_price': '',
+                'app4_notes': '',
+                'app4_video': ''
+            }
         };
     },
 
-    render: function() {        
-        var repeatCheck = [];
+    componentWillMount: function() {
+        if (this.props && this.props.data) {
+            this.setState(this.props.data);
+        }
+    },
 
-        var grades = [{
-            value: '',
-            label: 'All'
-        }];
-        this.state.islandList.forEach(function(record) {
-            if (repeatCheck.indexOf(record.grade_level) === -1) {
-                repeatCheck.push(record.grade_level);
-                grades.push({
-                    value: record.grade_level,
-                    label: record.grade_level
-                });
-            }
-        });
+    render: function() {
 
-        var islands = [{
-            value: '',
-            label: 'All'
-        }];
-        this.state.islandList.forEach(function(record) {
-            if (repeatCheck.indexOf(record.island_name) === -1) {
-                repeatCheck.push(record.island_name);
-                islands.push({
-                    value: record.island_name,
-                    label: record.island_name
-                });
-            }
-        });
-
-        var islandRows = [];
-        this.state.islandList.forEach(function(record) {
-            var islandFilter = this.state.selectedIsland;
-            var gradeFilter = this.state.selectedGrade;
-            
-            if ((islandFilter && record.island_name !== islandFilter) || (gradeFilter && record.grade_level !== gradeFilter)) {
-                return;
-            }
-
-
-            islandRows.push(
-                <div className="islandRow tableRow">
-                    <div className="islandName tableCell">
-                        {record.island_name}
-                    </div>
-                    <div className="islandDomain tableCell">
-                        {record.domain}
-                    </div>
-                    <div className="islandGradeLevel tableCell">
-                        {record.grade_level}
-                    </div>
-                    <div className="islandStandards tableCell">
-                        {record.standards}
-                    </div>
-                    <div className="islandDescription tableCell">
-                        {record.parent_friendly_descriptions}
-                    </div>
-                </div>
+        var fields = Object.keys(this.state.data).map(function(field) {
+            return (
+                <InputText className="fieldset fieldset--addedit" labelClass="label" inputClass={field + ' input'} id={field} label={field} value={this.state[field]} onChange={this.handleChange} />
             );
-            return;
         }, this);
 
         return (
-            <div className="island-detail IslandDetail">
-                <Style scopeSelector=".IslandDetail"
-                    rules={{
-                        '.tableRow': {
-                            display: 'table-row'
-                        },
-                        '.tableCell': {
-                            display: 'table-cell'
-                        },
-                        '.filterContainers': {
-                            width: '50%',
-                            paddingBottom: '40px'
-                        },
-                        '.header': {
-                            fontWeight: '700',
-                            fontSize: '1.15em'
-                        },
-                        label: {
-                            fontSize: '1.3em'
-                        },
-                        '.islandRow .tableCell': {
-                            padding: '7px',
-                            borderBottom: '1px solid white'
-                        }
-                    }}
-                />
-                <div className="filters tableRow">
-                    <div className="select-grade tableCell filterContainers">
-                        <InputSelect label="Select Grade:" options={grades} id="selectedGrade" onChange={this.applyFilter} />
-                    </div>
-                    <div className="select-island tableCell filterContainers">
-                        <InputSelect label="Select Island:" options={islands} id="selectedIsland" onChange={this.applyFilter} />
-                    </div>
-                </div>
-                <div className="line">
-                    <div className="box size12of12">
-                        <div className="islandRow header tableRow">
-                            <div className="islandName tableCell">
-                                Island Name
-                            </div>
-                            <div className="islandDomain tableCell">
-                                Domain
-                            </div>
-                            <div className="islandGradeLevel tableCell">
-                                Grade Level
-                            </div>
-                            <div className="islandStandards tableCell">
-                                Standards
-                            </div>
-                            <div className="islandDescription tableCell">
-                                Parent-friendly Description
-                            </div>
-                        </div>
-                        {islandRows}
-                    </div>
-                </div>
+            <div className="IslandDetail">
+                <input className="button button--inline" type="button" value="Save" />
+                <input className="button button--inline" type="button" value="Cancel" onClick={this.handleCancel} />
+                {fields}
+                <input className="button button--inline" type="button" value="Save" />
+                <input className="button button--inline" type="button" value="Cancel" onClick={this.handleCancel} />
             </div>
         );
     },
 
-    loadData: function(data) {
-        this.setState({
-            islandList: data
-        });
+    handleCancel: function() {
+        Utils.Dispatcher.dispatch('change-main-component', { page: 'island-detail'});
     },
 
-    islandDataSuccess: function(data, xhr, status) {
-        // console.log('SUCCESS>>>', data);
-        Utils.Dispatcher.dispatch('new-item', { data: JSON.parse(data).data.islands, storeName: 'islandList' });
-    },
-
-    islandDataError: function(data, xhr, status) {
-        // console.log('ERROR>>>', data);
-        Utils.Dispatcher.dispatch('error-message', {
-            message: 'There was an error getting island data. Server responded: ' + data.data.msg
-        });
-    },    
-
-    handleListChange: function(data) {
-        // console.log('LIST CHANGED>>>', data);
-        this.loadData(data);
-    },
-
-    applyFilter: function(event) {
-        var value = event.target.value;
-        var key = event.target.id;
-        var newState = {};
-        newState[key] = value;
-        this.setState(newState);
+    handleChange: function(event) {
+        var newValue = {};
+        newValue[event.target.id] = event.target.value;
+        this.setState(newValue);
     }
-
 });
 
-module.exports = Radium(IslandDetail);
+module.exports = IslandDetail;

@@ -82,6 +82,11 @@ var LoggedInHome = React.createClass({
 
     getStatsSuccess: function(data, xhr, status) {
         var data = JSON.parse(data).data;
+        if (!Object.keys(data).length) {
+            Utils.Dispatcher.dispatch('error-message', {
+                message: 'Got a success response from server but no data.'
+            });
+        }
         Utils.Dispatcher.dispatch('new-item', { data: data, storeName: 'statistics' });
         this.loadData(data);
     },
