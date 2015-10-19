@@ -27,7 +27,7 @@ var MainComponentContainer = React.createClass({
                 break;
             case "island-detail":
                 return (
-                    <IslandOverview />
+                    <IslandOverview view={this.state.data && this.state.data.view} />
                 );
             case "signout":
                 // Remove onbeforeunload handler when logged out

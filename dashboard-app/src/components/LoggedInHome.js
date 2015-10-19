@@ -86,6 +86,7 @@ var LoggedInHome = React.createClass({
             Utils.Dispatcher.dispatch('error-message', {
                 message: 'Got a success response from server but no data.'
             });
+            return;
         }
         Utils.Dispatcher.dispatch('new-item', { data: data, storeName: 'statistics' });
         this.loadData(data);

@@ -18,6 +18,7 @@ var IslandOverview = React.createClass({
         }
         
         Utils.Dispatcher.register('islandList-change', [], this.handleListChange);
+        Utils.Dispatcher.register('change-island-overview', [], this.handleChangeView);
         Utils.Dispatcher.dispatch('change-header-title', {
             title: 'Islands:',
             subtitle: 'Edit or add Islands'
@@ -46,11 +47,11 @@ var IslandOverview = React.createClass({
         switch(this.state.view) {
         case 'create':
             return (
-                <IslandDetail />
+                <IslandDetail mode={this.state.view} />
             );
         case 'edit':
             return (
-                <IslandDetail data={this.state.selectedRecordData} />
+                <IslandDetail mode={this.state.view} data={this.state.selectedRecordData} />
             );
         case 'overview':
             var repeatCheck = [];
@@ -213,6 +214,12 @@ var IslandOverview = React.createClass({
         this.loadData(data);
     },
 
+    handleChangeView: function(data) {
+        this.setState({
+            view: data.view
+        });
+    },
+
     applyFilter: function(event) {
         var value = event.target.value;
         var key = event.target.id;
@@ -262,6 +269,14 @@ var IslandOverview = React.createClass({
 
     getRecordError: function(data, xhr, status) {
         Utils.dispatch('error-message', { message: 'Error getting record. Server responded: ' + data.data.msg });
+    },
+
+    compnoentDidMount: function() {
+        if (this.props && this.props.view) {
+            this.setState({
+                view: this.props.view
+            });
+        }
     }
 
 });

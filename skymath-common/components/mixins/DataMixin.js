@@ -115,7 +115,7 @@ var DataMixin = {
             },
             successFn: successFn,
             errorFn: errorFn
-        })
+        });
     },
 
     getStatistics: function(successFn, errorFn) {
@@ -124,6 +124,16 @@ var DataMixin = {
             data: {
                 request: 'get_statistics'
             },
+            successFn: successFn,
+            errorFn: errorFn
+        });
+    },
+
+    createIsland: function(data, successFn, errorFn) {
+        data['request'] = 'new_island';
+        this.ajaxCall({
+            method: 'POST',
+            data: data,
             successFn: successFn,
             errorFn: errorFn
         });
