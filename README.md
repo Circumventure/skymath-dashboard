@@ -1,4 +1,4 @@
-# BIL-Admin-App
+# SkyMath
 
 Before you begin, you need:
 grunt cli (`npm install -g grunt-cli`)
@@ -6,7 +6,7 @@ sass (`gem install sass`)
 
 once cloned, from the BIL-Admin-App directory:
 
-`npm install` and then `grunt initialize` (first time only)
+`npm install` and then `grunt`
 
 Then, while developing, you can use:
 `grunt` to compile the app and 
