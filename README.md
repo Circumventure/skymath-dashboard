@@ -22,6 +22,4 @@ You can trace through how the app works by starting with `App.js` in the `compon
 - Utils.Store is the global state where we put things like the user's token and info, user's current happenings from the server, etc.
 - Utils.Dispatcher is our custom event pubsub system where components that don't have a parent/child relationship can subscribe to and publish events to each other. This is primarily how the Store is updated, Errors and surfaced and Alerts are done.
 
-Ticket/bug tracking is done through Zoho Bugtracker (https://projects.zoho.com/portal/jessicachan#dashboard/792235000000014021)
-
 No set release cycles yet, we're just doing them when we get done with a chunk of things. Pull the latest from develop and checkout a branch tracking it to work on your new feature. Then do a pull request when you're done back against develop.
