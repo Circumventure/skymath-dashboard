@@ -9,6 +9,7 @@ module.exports = function(grunt) {
                 transform: [ require('grunt-react').browserify ],
                 browserifyOptions: {
                     paths: [
+                        'node_modules',
                         'src/skymath-common/components',
                         'src/skymath-common/components/mixins',
                         'src/skymath-common/vendor',
