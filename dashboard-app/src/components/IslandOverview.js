@@ -113,7 +113,7 @@ var IslandOverview = React.createClass({
                         </div>
                         <div className="islandOperations tableCell">
                             <input className="button button--block" type="button" value="Edit" data-islandname={record.island_name} onClick={this.handleEditRecord} />
-                            <input className="button button--block" type="button" value="Delete" />
+                            // <input className="button button--block" type="button" value="Delete" />
                         </div>
                     </div>
                 );
@@ -155,8 +155,8 @@ var IslandOverview = React.createClass({
                             <InputSelect label="Select Island:" options={islands} id="selectedIsland" onChange={this.applyFilter} />
                         </div>
                     </div>
-                    <div className="operations">
-                        <input className="button button--block" type="button" value="New" onClick={this.handleCreateNew} />
+                    // <div className="operations">
+                    //     <input className="button button--block" type="button" value="New" onClick={this.handleCreateNew} />
                     </div>
                     <div className="line">
                         <div className="box size12of12">
@@ -205,7 +205,7 @@ var IslandOverview = React.createClass({
     islandDataError: function(data, xhr, status) {
         // console.log('ERROR>>>', data);
         Utils.Dispatcher.dispatch('error-message', {
-            message: 'There was an error getting island data. Server responded: ' + data.data.msg
+            message: 'There was an error getting island data. Server responded: ' + data.responseJSON.msg
         });
     },    
 

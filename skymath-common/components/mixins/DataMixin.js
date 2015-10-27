@@ -53,6 +53,8 @@ var DataMixin = {
      * @return {[type]}      [description]
      */
     ajaxCall: function(args) {
+        headers = args.headers ? args.headers : {};
+        headers['authorization'] = "Basic U2t5TWF0aDpTa3kkJCQxMjMhQE1hdGg=";
         $.ajax({
             beforeSend: function(xhr, settings) {
                 this.showLoadingScreen();
@@ -72,25 +74,22 @@ var DataMixin = {
             error: function(data, status, xhr) {
                 this.handleErrorFunc(args.errorFn, data, status, xhr);
             }.bind(this),
-            headers: {
-                "authorization": "Basic U2t5TWF0aDpTa3kkJCQxMjMhQE1hdGg="
-            }
+            headers: headers
         });
     },
 
-    loginUser: function(successFn, errorFn) {
-        // TODO(jchan): No login endpoint yet
-        // this.ajaxCall({
-        //     method: 'POST',
-        //     data: {
-        //         request: 'login',
-        //         userid: 'test',
-        //         password: 'test',
-        //     },
-        //     successFn: successFn,
-        //     errorFn: errorFn
-        // });
-        successFn();
+    loginUser: function(data, successFn, errorFn) {
+        this.ajaxCall({
+            method: 'POST',
+            data: {
+                request: 'admin_login'
+            },
+            successFn: successFn,
+            errorFn: errorFn,
+            headers: {
+                'AdminAuthorization': btoa(data['identity'] + ':' + data['password'])
+            }
+        });
     },
 
     registerUser: function() {},

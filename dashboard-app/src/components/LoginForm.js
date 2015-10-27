@@ -45,7 +45,7 @@ var LoginForm = React.createClass({
                 "identity": identity,
                 "password": password
             };
-            this.loginUser(this.handleSuccess, this.handleError);
+            this.loginUser(data, this.handleSuccess, this.handleError);
         }
     },
 

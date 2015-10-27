@@ -95,7 +95,7 @@ var LoggedInHome = React.createClass({
     getStatsError: function(data, xhr, status) {
         console.log(data);
         Utils.Dispatcher.dispatch('error-message', {
-            message: 'There was an error getting statistics. Server responded: ' + data.data.msg
+            message: 'There was an error getting statistics. Server responded: ' + data.responseJSON.msg
         });
     },
 
