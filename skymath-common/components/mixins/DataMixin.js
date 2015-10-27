@@ -136,6 +136,16 @@ var DataMixin = {
             successFn: successFn,
             errorFn: errorFn
         });
+    },
+
+    updateIsland: function(data, successFn, errorFn) {
+        data['request'] = 'update_island'
+        this.ajaxCall({
+            method: 'POST',
+            data: data,
+            successFn: successFn,
+            errorFn: errorFn
+        });
     }
 };
 

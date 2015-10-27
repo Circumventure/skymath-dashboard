@@ -47,11 +47,11 @@ var IslandOverview = React.createClass({
         switch(this.state.view) {
         case 'create':
             return (
-                <IslandDetail mode={this.state.view} />
+                <IslandDetail mode={this.state.view} refresh={this.refreshData} />
             );
         case 'edit':
             return (
-                <IslandDetail mode={this.state.view} data={this.state.selectedRecordData} />
+                <IslandDetail mode={this.state.view} data={this.state.selectedRecordData} refresh={this.refreshData} />
             );
         case 'overview':
             var repeatCheck = [];
@@ -113,7 +113,7 @@ var IslandOverview = React.createClass({
                         </div>
                         <div className="islandOperations tableCell">
                             <input className="button button--block" type="button" value="Edit" data-islandname={record.island_name} onClick={this.handleEditRecord} />
-                            // <input className="button button--block" type="button" value="Delete" />
+                            {/* <input className="button button--block" type="button" value="Delete" /> */}
                         </div>
                     </div>
                 );
@@ -155,9 +155,9 @@ var IslandOverview = React.createClass({
                             <InputSelect label="Select Island:" options={islands} id="selectedIsland" onChange={this.applyFilter} />
                         </div>
                     </div>
-                    // <div className="operations">
-                    //     <input className="button button--block" type="button" value="New" onClick={this.handleCreateNew} />
-                    </div>
+                    {/* <div className="operations">
+                        <input className="button button--block" type="button" value="New" onClick={this.handleCreateNew} /> 
+                    </div>*/}
                     <div className="line">
                         <div className="box size12of12">
                             <div className="islandRow header tableRow">
@@ -195,6 +195,10 @@ var IslandOverview = React.createClass({
         this.setState({
             islandList: data
         });
+    },
+
+    refreshData: function() {
+        this.getIslands(this.islandDataSuccess, this.islandDataError);
     },
 
     islandDataSuccess: function(data, xhr, status) {
@@ -245,13 +249,13 @@ var IslandOverview = React.createClass({
                 var arr = data[key];
                 for (var i = 0; i < arr.length; i++) {
                     if (key.indexOf('app') !== -1) {
-                        for (var key2 in arr[i]) {
-                            data['app' + i + '_' + key2] = arr[i][key2];
+                        for (var key1 in arr[i]) {
+                            data['app' + i + '_' + key1] = arr[i][key1];
                         }
                         
                     }
                     if (key.indexOf('video') !== -1) {
-                        for (key in arr[i]) {
+                        for (var key2 in arr[i]) {
                             data['app' + i + '_' + key2] = arr[i][key2];
                         }
                     }
