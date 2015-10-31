@@ -39,8 +39,8 @@ var Menu = React.createClass({
 
         var adminSubmenuItems = adminSubmenuItemData.map(function(data) {
             return (
-                <li className="menu-subitem menu-item" onClick={this.handleMenuItemClick}>
-                    <button value={data.value} className="menu-label">{data.label}</button>
+                <li className="menu-subitem menu-item" onClick={this.handleMenuItemClick} id={data.value}>
+                    <button className="menu-label">{data.label}</button>
                 </li>
             );
         }.bind(this));
@@ -92,8 +92,8 @@ var Menu = React.createClass({
     },
 
     handleMenuItemClick: function(event) {
-        var value = event.target.value;
-        Utils.Dispatcher.dispatch('change-main-component', {page: event.target.value});
+        var id = event.target.id || event.target.parentElement.id;
+        Utils.Dispatcher.dispatch('change-main-component', {page: id});
     }
 });
 

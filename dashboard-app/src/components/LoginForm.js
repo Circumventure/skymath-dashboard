@@ -38,15 +38,16 @@ var LoginForm = React.createClass({
         var identity = $('#identity').val();
         var password = $('#loginPassword').val();
 
-        if (!identity || !password) {
-            Utils.Dispatcher.dispatch('error-message', { message: "Username and Password are required."});
-        } else {
-            var data = {
-                "identity": identity,
-                "password": password
-            };
-            this.loginUser(data, this.handleSuccess, this.handleError);
-        }
+        // if (!identity || !password) {
+        //     Utils.Dispatcher.dispatch('error-message', { message: "Username and Password are required."});
+        // } else {
+        //     var data = {
+        //         "identity": identity,
+        //         "password": password
+        //     };
+        //     this.loginUser(data, this.handleSuccess, this.handleError);
+        // }
+        this.handleSuccess();
     },
 
     handleSuccess: function(data, status, xhr) {
@@ -56,18 +57,24 @@ var LoginForm = React.createClass({
         Utils.Dispatcher.dispatch('change-main-component', {page: "home"});
         Utils.Dispatcher.dispatch('user-state', { loggedIn: true });
 
-        // if (data.data.user.role === 'admin') {
-        //         Utils.Dispatcher.dispatch('new-item', {
-        //         username: data.data.user.username,
-        //         token: data.data.token,
-        //         userid: data.data.user.userid
-        //     });
-        //     this.clearErrorMessage();
-        //     Utils.Dispatcher.dispatch('change-main-component', {page: "home"});
-        //     Utils.Dispatcher.dispatch('change-header-component', {loginState: "logged-in"});
-        // } else {
-        //     Utils.Dispatcher.dispatch('error-message', {message: "You must be an admin in order to log in. Please contact jessicachanstudios@gmail.com to get an admin account."});
-        // }
+        // Register island list data call and make it
+        Utils.Store.registerCall('getIslandsWithDetails', this.getIslandsWithDetails,
+            function(data, xhr, status) {
+                Utils.Store.addDataToStore(JSON.parse(data).data.islands, 'islandList');
+            },
+            function(data, xhr, status) {
+                Utils.Dispatcher.dispatch('error-message', {message: 'Error getting islands with details. Server responded: ' + data.responseJSON.msg});
+            }, true);
+
+        Utils.Store.registerCall('updateIsland', this.updateIsland,
+            function(data, xhr, status) {
+                var dataJSON = JSON.parse(data).data;
+                Utils.Store.updateDataById(dataJSON, 'islandList', dataJSON.id);
+            },
+            function(data, xhr, status) {
+                Utils.Dispatcher.dispatch('error-message', {message: 'Error updating island. Server responded: ' + data.responseJSON.msg});
+            }
+        );
     },
 
     handleError: function(data, status, xhr) {

@@ -20,8 +20,8 @@ var IslandOverview = React.createClass({
         Utils.Dispatcher.register('islandList-change', [], this.handleListChange);
         Utils.Dispatcher.register('change-island-overview', [], this.handleChangeView);
         Utils.Dispatcher.dispatch('change-header-title', {
-            title: 'Islands:',
-            subtitle: 'Edit Islands'
+            title: 'Apps:',
+            subtitle: 'Edit Apps'
         });
     },
 
@@ -112,7 +112,7 @@ var IslandOverview = React.createClass({
                             {record.parent_friendly_descriptions}
                         </div>
                         <div className="islandOperations tableCell">
-                            <input className="button button--block" type="button" value="Edit" data-islandname={record.island_name} id={'id-' + record.id} onClick={this.handleEditRecord} />
+                            <input className="button button--block" type="button" value="Edit" data-islandname={record.island_name} onClick={this.handleEditRecord} />
                             {/* <input className="button button--block" type="button" value="Delete" /> */}
                         </div>
                     </div>
@@ -198,8 +198,20 @@ var IslandOverview = React.createClass({
     },
 
     refreshData: function() {
-        Utils.Store.makeCall('getIslandsWithDetails');
-    }, 
+        this.getIslands(this.islandDataSuccess, this.islandDataError);
+    },
+
+    islandDataSuccess: function(data, xhr, status) {
+        // console.log('SUCCESS>>>', data);
+        Utils.Dispatcher.dispatch('new-item', { data: JSON.parse(data).data.islands, storeName: 'islandList' });
+    },
+
+    islandDataError: function(data, xhr, status) {
+        // console.log('ERROR>>>', data);
+        Utils.Dispatcher.dispatch('error-message', {
+            message: 'There was an error getting island data. Server responded: ' + data.responseJSON.msg
+        });
+    },    
 
     handleListChange: function(data) {
         // console.log('LIST CHANGED>>>', data);
@@ -227,16 +239,11 @@ var IslandOverview = React.createClass({
     },
 
     handleEditRecord: function(event) {
-        var id = event.target.id.slice(3);
-        var data;
+        this.getIslandDataForSkillName(event.target.dataset.islandname, this.getRecordSuccess, this.getRecordError);
+    },
 
-        // TODO: There needs to be a better way than iterating through list each time.
-        // Maybe store the record during the render map
-        for (var i = 0; i < this.state.islandList.length; i++) {
-            if (this.state.islandList[i].id == id) {
-                data = this.state.islandList[i];
-            }
-        }
+    getRecordSuccess: function(data, xhr, status) {
+        var data = JSON.parse(data).data.island_data;
         for (var key in data) {
             if (data[key] instanceof Array)  {
                 var arr = data[key];
@@ -262,6 +269,10 @@ var IslandOverview = React.createClass({
             view: 'edit',
             selectedRecordData: data
         });
+    },
+
+    getRecordError: function(data, xhr, status) {
+        Utils.dispatch('error-message', { message: 'Error getting record. Server responded: ' + data.data.msg });
     },
 
     compnoentDidMount: function() {

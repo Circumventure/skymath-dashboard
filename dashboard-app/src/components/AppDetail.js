@@ -4,31 +4,12 @@ var Utils = require('Utils');
 var DataMixin = require('DataMixin');
 var InputText = require('InputText');
 
-var IslandDetail = React.createClass({
+var AppDetail = React.createClass({
     mixins: [DataMixin],
 
     getInitialState: function() {
         return {
             'island_name': '',
-            'clean_name': '',
-            'parent_friendly_descriptions': '',
-            'standards': '',
-            'domain': '',
-            'grade': '',
-            'curator_initials': '',
-            'announce_sound': '',
-            'video1_title': '',
-            'video1_link': '',
-            'video1_notes': '',
-            'video2_title': '',
-            'video2_link': '',
-            'video2_notes': '',
-            'video3_title': '',
-            'video3_link': '',
-            'video3_notes': '',
-            'video4_title': '',
-            'video4_link': '',
-            'video4_notes': '',
             'total_cost_of_3_apps': '',
             'total_cost_of_4_apps': '',
             'app1_name': '',
@@ -89,14 +70,9 @@ var IslandDetail = React.createClass({
         );
     },
 
-    backToOverview: function(event) {
-        if (event && event.target.value === 'Cancel') {
-            Utils.Dispatcher.dispatch('change-island-overview', { view: 'overview' });
-        } else {
-            this.props.refresh();
-            Utils.Dispatcher.dispatch('change-island-overview', { view: 'overview' });
-        }
-        
+    backToOverview: function() {
+        this.props.refresh();
+        Utils.Dispatcher.dispatch('change-island-overview', { view: 'overview' });
     },
 
     handleChange: function(event) {
@@ -194,4 +170,4 @@ var IslandDetail = React.createClass({
     }
 });
 
-module.exports = IslandDetail;
+module.exports = AppDetail;

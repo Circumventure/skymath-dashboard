@@ -1,5 +1,6 @@
 var React = require('react');
 
+var DataMixin = require('DataMixin');
 var Header = require('Header');
 var ErrorBar = require('ErrorBar');
 var SuccessBar = require('SuccessBar');

@@ -3,6 +3,8 @@ var React = require('react');
 var LoginForm = require('LoginForm');
 var LoggedInHome = require('LoggedInHome');
 var IslandOverview = require('IslandOverview');
+var VideoOverview = require('VideoOverview');
+var AppOverview = require('AppOverview');
 var FormMixin = require('FormMixin');
 var Utils = require('Utils');
 
@@ -28,6 +30,14 @@ var MainComponentContainer = React.createClass({
             case "island-detail":
                 return (
                     <IslandOverview view={this.state.data && this.state.data.view} />
+                );
+            case "apps":
+                return (
+                    <AppOverview view={this.state.data && this.state.data.view} />
+                );
+            case "videos":
+                return (
+                    <VideoOverview view={this.state.data && this.state.data.view} />
                 );
             case "signout":
                 // Remove onbeforeunload handler when logged out

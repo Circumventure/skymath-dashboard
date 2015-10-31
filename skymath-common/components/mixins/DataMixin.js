@@ -94,7 +94,7 @@ var DataMixin = {
 
     registerUser: function() {},
 
-    getIslandDataForSkillName: function(skillName, successFn, errorFn) {
+    getIslandDataForSkillName: function(successFn, errorFn, skillName) {
         this.ajaxCall({
             method: 'POST',
             data: {
@@ -117,6 +117,18 @@ var DataMixin = {
         });
     },
 
+    getIslandsWithDetails: function(successFn, errorFn) {
+        this.ajaxCall({
+            method: 'POST',
+            data: {
+                request: 'get_islands',
+                details: true
+            },
+            successFn: successFn,
+            errorFn: errorFn
+        });
+    },
+
     getStatistics: function(successFn, errorFn) {
         this.ajaxCall({
             method: 'POST',
@@ -128,7 +140,7 @@ var DataMixin = {
         });
     },
 
-    createIsland: function(data, successFn, errorFn) {
+    createIsland: function(successFn, errorFn, data) {
         data['request'] = 'new_island';
         this.ajaxCall({
             method: 'POST',
@@ -138,7 +150,7 @@ var DataMixin = {
         });
     },
 
-    updateIsland: function(data, successFn, errorFn) {
+    updateIsland: function(successFn, errorFn, data) {
         data['request'] = 'update_island'
         this.ajaxCall({
             method: 'POST',

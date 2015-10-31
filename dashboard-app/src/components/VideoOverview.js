@@ -5,9 +5,9 @@ var Style = Radium.Style;
 var Utils = require('Utils');
 var DataMixin = require('DataMixin');
 var InputSelect = require('InputSelect');
-var IslandDetail = require('IslandDetail');
+var VideoDetail = require('VideoDetail');
 
-var IslandOverview = React.createClass({
+var VideoOverview = React.createClass({
     mixins: [DataMixin],
 
     componentWillMount: function() {
@@ -20,8 +20,8 @@ var IslandOverview = React.createClass({
         Utils.Dispatcher.register('islandList-change', [], this.handleListChange);
         Utils.Dispatcher.register('change-island-overview', [], this.handleChangeView);
         Utils.Dispatcher.dispatch('change-header-title', {
-            title: 'Islands:',
-            subtitle: 'Edit Islands'
+            title: 'Videos:',
+            subtitle: 'Edit Videos'
         });
     },
 
@@ -47,11 +47,11 @@ var IslandOverview = React.createClass({
         switch(this.state.view) {
         case 'create':
             return (
-                <IslandDetail mode={this.state.view} refresh={this.refreshData} />
+                <VideoDetail mode={this.state.view} refresh={this.refreshData} />
             );
         case 'edit':
             return (
-                <IslandDetail mode={this.state.view} data={this.state.selectedRecordData} refresh={this.refreshData} />
+                <VideoDetail mode={this.state.view} data={this.state.selectedRecordData} refresh={this.refreshData} />
             );
         case 'overview':
             var repeatCheck = [];
@@ -99,17 +99,17 @@ var IslandOverview = React.createClass({
                         <div className="islandName tableCell">
                             {record.island_name}
                         </div>
-                        <div className="islandDomain tableCell">
-                            {record.domain}
+                        <div className="video1_title tableCell">
+                            {record.video1_title}
                         </div>
-                        <div className="islandGradeLevel tableCell">
-                            {record.grade_level}
+                        <div className="video2_title tableCell">
+                            {record.video2_title}
                         </div>
-                        <div className="islandStandards tableCell">
-                            {record.standards}
+                        <div className="video3_title tableCell">
+                            {record.video3_title}
                         </div>
-                        <div className="islandDescription tableCell">
-                            {record.parent_friendly_descriptions}
+                        <div className="video4_title tableCell">
+                            {record.video4_title}
                         </div>
                         <div className="islandOperations tableCell">
                             <input className="button button--block" type="button" value="Edit" data-islandname={record.island_name} id={'id-' + record.id} onClick={this.handleEditRecord} />
@@ -164,17 +164,17 @@ var IslandOverview = React.createClass({
                                 <div className="islandName tableCell">
                                     Island Name
                                 </div>
-                                <div className="islandDomain tableCell">
-                                    Domain
+                                <div className="video1_title tableCell">
+                                    Video1 Title
                                 </div>
-                                <div className="islandGradeLevel tableCell">
-                                    Grade Level
+                                <div className="video2_title tableCell">
+                                    Video2 Title
                                 </div>
-                                <div className="islandStandards tableCell">
-                                    Standards
+                                <div className="video3_title tableCell">
+                                    Video3 Title
                                 </div>
-                                <div className="islandDescription tableCell">
-                                    Parent-friendly Description
+                                <div className="video4_title tableCell">
+                                    Video4 Title
                                 </div>
                                 <div className="islandOperations tableCell">
                                     Operations
@@ -198,8 +198,20 @@ var IslandOverview = React.createClass({
     },
 
     refreshData: function() {
-        Utils.Store.makeCall('getIslandsWithDetails');
-    }, 
+        this.getIslands(this.islandDataSuccess, this.islandDataError);
+    },
+
+    islandDataSuccess: function(data, xhr, status) {
+        // console.log('SUCCESS>>>', data);
+        Utils.Dispatcher.dispatch('new-item', { data: JSON.parse(data).data.islands, storeName: 'islandList' });
+    },
+
+    islandDataError: function(data, xhr, status) {
+        // console.log('ERROR>>>', data);
+        Utils.Dispatcher.dispatch('error-message', {
+            message: 'There was an error getting island data. Server responded: ' + data.responseJSON.msg
+        });
+    },    
 
     handleListChange: function(data) {
         // console.log('LIST CHANGED>>>', data);
@@ -274,4 +286,4 @@ var IslandOverview = React.createClass({
 
 });
 
-module.exports = Radium(IslandOverview);
+module.exports = Radium(VideoOverview);
