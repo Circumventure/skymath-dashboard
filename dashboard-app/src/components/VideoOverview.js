@@ -10,6 +10,8 @@ var VideoDetail = require('VideoDetail');
 var VideoOverview = React.createClass({
     mixins: [DataMixin],
 
+    recordMap: {},
+
     componentWillMount: function() {
         if (!Utils.Store.getStore('islandList')) {
             this.getIslandsWithDetails(this.islandDataSuccess, this.islandDataError);    
@@ -86,6 +88,7 @@ var VideoOverview = React.createClass({
 
             var islandRows = [];
             this.state.islandList.forEach(function(record) {
+                this.recordMap[record.id] = record;
                 var islandFilter = this.state.selectedIsland;
                 var gradeFilter = this.state.selectedGrade;
                 
@@ -240,15 +243,8 @@ var VideoOverview = React.createClass({
 
     handleEditRecord: function(event) {
         var id = event.target.id.slice(3);
-        var data;
+        var data = this.recordMap[id];
 
-        // TODO: There needs to be a better way than iterating through list each time.
-        // Maybe store the record during the render map
-        for (var i = 0; i < this.state.islandList.length; i++) {
-            if (this.state.islandList[i].id == id) {
-                data = this.state.islandList[i];
-            }
-        }
         for (var key in data) {
             if (data[key] instanceof Array)  {
                 var arr = data[key];

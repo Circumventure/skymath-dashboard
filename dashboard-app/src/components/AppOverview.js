@@ -10,6 +10,8 @@ var AppDetail = require('AppDetail');
 var AppOverview = React.createClass({
     mixins: [DataMixin],
 
+    recordMap: {},
+
     componentWillMount: function() {
         if (!Utils.Store.getStore('islandList')) {
             this.getIslandsWithDetails(this.islandDataSuccess, this.islandDataError);    
@@ -19,14 +21,14 @@ var AppOverview = React.createClass({
         
         Utils.Dispatcher.register('islandList-change', [], this.handleListChange);
         Utils.Dispatcher.register('change-island-overview', [], this.handleChangeView);
-        Utils.Dispatcher.dispatch('change-header-name', {
+        Utils.Dispatcher.dispatch('change-header-title', {
             name: 'Apps:',
             subname: 'Edit Apps'
         });
     },
 
     componentWillUnmount: function() {
-        Utils.Dispatcher.dispatch('change-header-name', {
+        Utils.Dispatcher.dispatch('change-header-title', {
             name: '',
             subname: ''
         });
@@ -38,7 +40,9 @@ var AppOverview = React.createClass({
             selectedIsland: null,
             selectedGrade: null,
             view: 'overview',
-            selectedRecordData: {}
+            selectedRecordData: {},
+            freeAppsTotal: 0,
+            appsTotal: 0
         };
     },
 
@@ -86,6 +90,7 @@ var AppOverview = React.createClass({
 
             var islandRows = [];
             this.state.islandList.forEach(function(record) {
+                this.recordMap[record.id] = record;
                 var islandFilter = this.state.selectedIsland;
                 var gradeFilter = this.state.selectedGrade;
                 
@@ -131,7 +136,7 @@ var AppOverview = React.createClass({
                                 display: 'table-cell'
                             },
                             '.filterContainers': {
-                                width: '50%',
+                                width: '25%',
                                 paddingBottom: '40px'
                             },
                             '.header': {
@@ -144,6 +149,14 @@ var AppOverview = React.createClass({
                             '.islandRow .tableCell': {
                                 padding: '7px',
                                 borderBottom: '1px solid white'
+                            },
+                            '.app-totals': {
+                                textAlign: 'center'
+                            },
+                            '.app-totals div': {
+                                paddingLeft: '0',
+                                paddingTop: '0',
+                                marginTop: '0'
                             }
                         }}
                     />
@@ -153,6 +166,18 @@ var AppOverview = React.createClass({
                         </div>
                         <div className="select-island tableCell filterContainers">
                             <InputSelect label="Select Island:" options={islands} id="selectedIsland" onChange={this.applyFilter} />
+                        </div>
+                        <div className="app-totals tableCell filterContainers">
+                            <fieldset className="inline-fields fieldset">
+                                <div className="label">Total # of Apps</div>
+                                <div className="read-only large-type field">{this.state.appsTotal}</div>
+                            </fieldset>
+                        </div>
+                        <div className="app-totals tableCell filterContainers">
+                            <fieldset className="inline-fields fieldset">
+                                <div className="label">Total # of Free Apps</div>
+                                <div className="read-only large-type field">{this.state.freeAppsTotal}</div>
+                            </fieldset>
                         </div>
                     </div>
                     {/* <div className="operations">
@@ -192,8 +217,26 @@ var AppOverview = React.createClass({
     },
 
     loadData: function(data) {
+        // Count number of apps/free apps
+        var appsTotal = 0;
+        var freeAppsTotal = 0;
+        for (var i = 0; i < data.length; i++) {
+            for (var j = 1; j < 5; j++) {
+                var appName = 'app' + j + '_name';
+                var appPrice = 'app'+ j + '_price';
+                var appPriceVal = parseFloat(data[i][appPrice]);
+                if (appName) {
+                    appsTotal += 1;
+                }
+                if (appName && !appPriceVal) {
+                    freeAppsTotal += 1;
+                }
+            }
+        }
         this.setState({
-            islandList: data
+            islandList: data,
+            appsTotal: appsTotal,
+            freeAppsTotal: freeAppsTotal
         });
     },
 
@@ -240,15 +283,8 @@ var AppOverview = React.createClass({
 
     handleEditRecord: function(event) {
         var id = event.target.id.slice(3);
-        var data;
+        var data = this.recordMap[id];
 
-        // TODO: There needs to be a better way than iterating through list each time.
-        // Maybe store the record during the render map
-        for (var i = 0; i < this.state.islandList.length; i++) {
-            if (this.state.islandList[i].id == id) {
-                data = this.state.islandList[i];
-            }
-        }
         for (var key in data) {
             if (data[key] instanceof Array)  {
                 var arr = data[key];
