@@ -38,16 +38,15 @@ var LoginForm = React.createClass({
         var identity = $('#identity').val();
         var password = $('#loginPassword').val();
 
-        // if (!identity || !password) {
-        //     Utils.Dispatcher.dispatch('error-message', { message: "Username and Password are required."});
-        // } else {
-        //     var data = {
-        //         "identity": identity,
-        //         "password": password
-        //     };
-        //     this.loginUser(data, this.handleSuccess, this.handleError);
-        // }
-        this.handleSuccess();
+        if (!identity || !password) {
+            Utils.Dispatcher.dispatch('error-message', { message: "Username and Password are required."});
+        } else {
+            var data = {
+                "identity": identity,
+                "password": password
+            };
+            this.loginUser(data, this.handleSuccess, this.handleError);
+        }
     },
 
     handleSuccess: function(data, status, xhr) {

@@ -54,6 +54,7 @@ var DataMixin = {
      */
     ajaxCall: function(args) {
         headers = args.headers ? args.headers : {};
+        // Make this encoded version of password or something? 
         headers['authorization'] = "Basic U2t5TWF0aDpTa3kkJCQxMjMhQE1hdGg=";
         $.ajax({
             beforeSend: function(xhr, settings) {
