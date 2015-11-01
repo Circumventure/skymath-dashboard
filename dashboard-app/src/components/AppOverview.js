@@ -5,9 +5,9 @@ var Style = Radium.Style;
 var Utils = require('Utils');
 var DataMixin = require('DataMixin');
 var InputSelect = require('InputSelect');
-var IslandDetail = require('IslandDetail');
+var AppDetail = require('AppDetail');
 
-var IslandOverview = React.createClass({
+var AppOverview = React.createClass({
     mixins: [DataMixin],
 
     componentWillMount: function() {
@@ -19,16 +19,16 @@ var IslandOverview = React.createClass({
         
         Utils.Dispatcher.register('islandList-change', [], this.handleListChange);
         Utils.Dispatcher.register('change-island-overview', [], this.handleChangeView);
-        Utils.Dispatcher.dispatch('change-header-title', {
-            title: 'Apps:',
-            subtitle: 'Edit Apps'
+        Utils.Dispatcher.dispatch('change-header-name', {
+            name: 'Apps:',
+            subname: 'Edit Apps'
         });
     },
 
     componentWillUnmount: function() {
-        Utils.Dispatcher.dispatch('change-header-title', {
-            title: '',
-            subtitle: ''
+        Utils.Dispatcher.dispatch('change-header-name', {
+            name: '',
+            subname: ''
         });
     },
 
@@ -47,11 +47,11 @@ var IslandOverview = React.createClass({
         switch(this.state.view) {
         case 'create':
             return (
-                <IslandDetail mode={this.state.view} refresh={this.refreshData} />
+                <AppDetail mode={this.state.view} refresh={this.refreshData} />
             );
         case 'edit':
             return (
-                <IslandDetail mode={this.state.view} data={this.state.selectedRecordData} refresh={this.refreshData} />
+                <AppDetail mode={this.state.view} data={this.state.selectedRecordData} refresh={this.refreshData} />
             );
         case 'overview':
             var repeatCheck = [];
@@ -99,20 +99,20 @@ var IslandOverview = React.createClass({
                         <div className="islandName tableCell">
                             {record.island_name}
                         </div>
-                        <div className="islandDomain tableCell">
-                            {record.domain}
+                        <div className="app1_name tableCell">
+                            {record.app1_name}
                         </div>
-                        <div className="islandGradeLevel tableCell">
-                            {record.grade_level}
+                        <div className="app2_name tableCell">
+                            {record.app2_name}
                         </div>
-                        <div className="islandStandards tableCell">
-                            {record.standards}
+                        <div className="app3_name tableCell">
+                            {record.app3_name}
                         </div>
-                        <div className="islandDescription tableCell">
-                            {record.parent_friendly_descriptions}
+                        <div className="app4_name tableCell">
+                            {record.app4_name}
                         </div>
                         <div className="islandOperations tableCell">
-                            <input className="button button--block" type="button" value="Edit" data-islandname={record.island_name} onClick={this.handleEditRecord} />
+                            <input className="button button--block" type="button" value="Edit" data-islandname={record.island_name} id={'id-' + record.id} onClick={this.handleEditRecord} />
                             {/* <input className="button button--block" type="button" value="Delete" /> */}
                         </div>
                     </div>
@@ -164,17 +164,17 @@ var IslandOverview = React.createClass({
                                 <div className="islandName tableCell">
                                     Island Name
                                 </div>
-                                <div className="islandDomain tableCell">
-                                    Domain
+                                <div className="app1_name tableCell">
+                                    App1 Title
                                 </div>
-                                <div className="islandGradeLevel tableCell">
-                                    Grade Level
+                                <div className="app2_name tableCell">
+                                    App2 Title
                                 </div>
-                                <div className="islandStandards tableCell">
-                                    Standards
+                                <div className="app3_name tableCell">
+                                    App3 Title
                                 </div>
-                                <div className="islandDescription tableCell">
-                                    Parent-friendly Description
+                                <div className="app4_name tableCell">
+                                    App4 Title
                                 </div>
                                 <div className="islandOperations tableCell">
                                     Operations
@@ -239,11 +239,16 @@ var IslandOverview = React.createClass({
     },
 
     handleEditRecord: function(event) {
-        this.getIslandDataForSkillName(event.target.dataset.islandname, this.getRecordSuccess, this.getRecordError);
-    },
+        var id = event.target.id.slice(3);
+        var data;
 
-    getRecordSuccess: function(data, xhr, status) {
-        var data = JSON.parse(data).data.island_data;
+        // TODO: There needs to be a better way than iterating through list each time.
+        // Maybe store the record during the render map
+        for (var i = 0; i < this.state.islandList.length; i++) {
+            if (this.state.islandList[i].id == id) {
+                data = this.state.islandList[i];
+            }
+        }
         for (var key in data) {
             if (data[key] instanceof Array)  {
                 var arr = data[key];
@@ -271,10 +276,6 @@ var IslandOverview = React.createClass({
         });
     },
 
-    getRecordError: function(data, xhr, status) {
-        Utils.dispatch('error-message', { message: 'Error getting record. Server responded: ' + data.data.msg });
-    },
-
     compnoentDidMount: function() {
         if (this.props && this.props.view) {
             this.setState({
@@ -285,4 +286,4 @@ var IslandOverview = React.createClass({
 
 });
 
-module.exports = Radium(IslandOverview);
+module.exports = Radium(AppOverview);

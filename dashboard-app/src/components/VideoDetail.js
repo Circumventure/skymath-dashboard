@@ -57,12 +57,7 @@ var VideoDetail = React.createClass({
     },
 
     backToOverview: function(event) {
-        if (event && event.target.value === 'Cancel') {
-            Utils.Dispatcher.dispatch('change-island-overview', { view: 'overview' });
-        } else {
-            this.props.refresh();
-            Utils.Dispatcher.dispatch('change-island-overview', { view: 'overview' });
-        }
+        Utils.Dispatcher.dispatch('change-island-overview', { view: 'overview' });
         
     },
 
@@ -73,24 +68,10 @@ var VideoDetail = React.createClass({
     },
 
     handleSave: function() {
-
         var data = this.state;
-
-        if (this.props.mode === 'create') {
-            this.createIsland(data, this.saveSuccess, this.saveError);
-        } else if (this.props.mode === 'edit') {
-            this.updateIsland(data, this.saveSuccess, this.saveError);
-        }
-    },
-
-    saveSuccess: function(data, xhr, status) {
-        Utils.Dispatcher.dispatch('success-message', { message: "Saved successfully."});
+        Utils.Store.makeCall('updateIsland', data);
         this.backToOverview();
     },
-
-    saveError: function(data, xhr, status) {
-        Utils.Dispatcher.dispatch('error-message', { message: "Error saving. Server responded: " + JSON.parse(data).data.msg});
-    }
 });
 
 module.exports = VideoDetail;

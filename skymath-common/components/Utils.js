@@ -17,7 +17,9 @@ var storeInstance, dispatcherInstance, Store = function() {
         }
 
         // Performs a deep copy merge of named store with the provided data.
-        return $.extend(true, this._store[storeName], data);
+        $.extend(true, this._store[storeName], data);
+        dispatcherInstance.dispatch(storeName + '-change', storeInstance.getStore(storeName));
+        return this._store[storeName];
     };
 
     this.updateDataById = function(data, storeName, id) {

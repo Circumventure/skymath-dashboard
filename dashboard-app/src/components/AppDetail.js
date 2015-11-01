@@ -70,9 +70,9 @@ var AppDetail = React.createClass({
         );
     },
 
-    backToOverview: function() {
-        this.props.refresh();
+    backToOverview: function(event) {
         Utils.Dispatcher.dispatch('change-island-overview', { view: 'overview' });
+        
     },
 
     handleChange: function(event) {
@@ -82,92 +82,10 @@ var AppDetail = React.createClass({
     },
 
     handleSave: function() {
-        // var data = {
-        //     'island_name': this.state.island_name,
-        //     'clean_name': this.state.clean_name,
-        //     'parent_friendly_descriptions': this.state.parent_friendly_descriptions,
-        //     'standards': this.state.standards,
-        //     'domain': this.state.domain,
-        //     'grade': this.state.grade,
-        //     'curator_initials': this.state.curator_initials,
-        //     'announce_sound': this.state.announce_sound,
-        //     'videos' : [
-        //         {
-        //             'title': this.state.video1_title,
-        //             'link': this.state.video1_link,
-        //             'notes': this.state.video1_notes
-        //         },
-        //         {
-        //             'title': this.state.video2_title,
-        //             'link': this.state.video2_link,
-        //             'notes': this.state.video2_notes
-        //         },
-        //         {
-        //             'title': this.state.video3_title,
-        //             'link': this.state.video3_link,
-        //             'notes': this.state.video3_notes
-        //         },
-        //         {
-        //             'title': this.state.video4_title,
-        //             'link': this.state.video4_link,
-        //             'notes': this.state.video4_notes
-        //         }
-        //     ],
-        //     'total_cost_of_3_apps': this.state.total_cost_of_3_apps,
-        //     'total_cost_of_4_apps': this.state.total_cost_of_4_apps,
-        //     'apps': [
-        //         {
-        //             'name': this.state.app1_name,
-        //             'icon': this.state.app1_icon,
-        //             'price': this.state.app1_price,
-        //             'video': this.state.app1_video,
-        //             'notes': this.state.app1_notes,
-        //             'link': this.state.app1_link
-        //         },
-        //         {
-        //             'name': this.state.app2_name,
-        //             'icon': this.state.app2_icon,
-        //             'price': this.state.app2_price,
-        //             'video': this.state.app2_video,
-        //             'notes': this.state.app2_notes,
-        //             'link': this.state.app2_link
-        //         },
-        //         {
-        //             'name': this.state.app3_name,
-        //             'icon': this.state.app3_icon,
-        //             'price': this.state.app3_price,
-        //             'video': this.state.app3_video,
-        //             'notes': this.state.app3_notes,
-        //             'link': this.state.app3_link
-        //         },
-        //         {
-        //             'name': this.state.app4_name,
-        //             'icon': this.state.app4_icon,
-        //             'price': this.state.app4_price,
-        //             'video': this.state.app4_video,
-        //             'notes': this.state.app4_notes,
-        //             'link': this.state.app4_link
-        //         }
-        //     ]
-        // };
-
         var data = this.state;
-
-        if (this.props.mode === 'create') {
-            this.createIsland(data, this.saveSuccess, this.saveError);
-        } else if (this.props.mode === 'edit') {
-            this.updateIsland(data, this.saveSuccess, this.saveError);
-        }
-    },
-
-    saveSuccess: function(data, xhr, status) {
-        Utils.Dispatcher.dispatch('success-message', { message: "Saved successfully."});
+        Utils.Store.makeCall('updateIsland', data);
         this.backToOverview();
     },
-
-    saveError: function(data, xhr, status) {
-        Utils.Dispatcher.dispatch('error-message', { message: "Error saving. Server responded: " + JSON.parse(data).data.msg});
-    }
 });
 
 module.exports = AppDetail;
