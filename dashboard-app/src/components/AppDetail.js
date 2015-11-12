@@ -99,7 +99,7 @@ var AppDetail = React.createClass({
             var re = /data\:image\/\w{2,}\;base64\,/;
             var match;
             var targetId = event.target.id;
-            var mimeFieldName = event.target.id.split('_')[0] + '_icon_mime';
+            var mimeFieldName = event.target.id.split('_')[0] + '_image_mime';
             var fr = new FileReader();
             fr.onloadend = function() {
                 data = fr.result;
