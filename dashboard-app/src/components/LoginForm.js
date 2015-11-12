@@ -20,7 +20,7 @@ var LoginForm = React.createClass({
                     Password:
                 </label>
                 <input className="input input--block input--signout" type="password" id="loginPassword" />
-                <input className="button button--block" type="submit" 
+                <input className="button button--block" type="submit"
                     onClick={this.handleSubmitClick} value="Sign in" />
             </div>
         );
@@ -31,10 +31,10 @@ var LoginForm = React.createClass({
         // autopopulate login and registration forms, which messes with us
         // because they don't fire events that we can hook onto to update the
         // component state object.
-        // 
+        //
         // TODO: Make IDs into data-attributes so we don't have to overqualify the
         // password ID
-        
+
         var identity = $('#identity').val();
         var password = $('#loginPassword').val();
 
@@ -56,6 +56,7 @@ var LoginForm = React.createClass({
         Utils.Dispatcher.dispatch('change-main-component', {page: "home"});
         Utils.Dispatcher.dispatch('user-state', { loggedIn: true });
 
+        // TODO: pull this out of the login form
         // Register island list data call and make it
         Utils.Store.registerCall('getIslandsWithDetails', this.getIslandsWithDetails,
             function(data, xhr, status) {
@@ -69,7 +70,7 @@ var LoginForm = React.createClass({
             function(data, xhr, status) {
                 var dataJSON = JSON.parse(data).data;
                 // Utils.Store.updateDataById(dataJSON, 'islandList', dataJSON.id);
-                
+
                 // This gets all data all over again. Instead, try and just update the record
                 // that we just updated.
                 Utils.Store.makeCall('getIslandsWithDetails');
@@ -78,6 +79,22 @@ var LoginForm = React.createClass({
                 Utils.Dispatcher.dispatch('error-message', {message: 'Error updating island. Server responded: ' + data.responseJSON.msg});
             }
         );
+
+        // Register test question data call
+        Utils.Store.registerCall('getTestQuestions', this.updateIsland,
+            function(data, xhr, status) {
+                var dataJSON = JSON.parse(data).data;
+                // Utils.Store.updateDataById(dataJSON, 'islandList', dataJSON.id);
+
+                // This gets all data all over again. Instead, try and just update the record
+                // that we just updated.
+                Utils.Store.makeCall('getIslandsWithDetails');
+            },
+            function(data, xhr, status) {
+                Utils.Dispatcher.dispatch('error-message', {message: 'Error updating island. Server responded: ' + data.responseJSON.msg});
+            }
+        );
+
     },
 
     handleError: function(data, status, xhr) {

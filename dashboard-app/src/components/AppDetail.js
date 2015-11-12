@@ -99,6 +99,7 @@ var AppDetail = React.createClass({
             var re = /data\:image\/\w{2,}\;base64\,/;
             var match;
             var targetId = event.target.id;
+            var mimeFieldName = event.target.id.split('_')[0] + '_icon_mime';
             var fr = new FileReader();
             fr.onloadend = function() {
                 data = fr.result;
@@ -107,6 +108,7 @@ var AppDetail = React.createClass({
                     data = data.substr(match[0].length);
                 }
                 newValue[targetId] = data;
+                newValue[mimeFieldName] = match[0].split(';')[0].split(':')[1];
                 this.setState(newValue);
             }.bind(this);
             fr.readAsDataURL(event.target.files[0]);
