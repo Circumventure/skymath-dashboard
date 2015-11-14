@@ -18,9 +18,9 @@ var DataMixin = {
     /**
      * All Ajax error callbacks should go through this handler first
      * TODO: Find any that don't
-     * @param  {Function} errorFn 
-     * @param  {Object} data    
-     * @param  {$Object} xhr     
+     * @param  {Function} errorFn
+     * @param  {Object} data
+     * @param  {$Object} xhr
      */
     handleErrorFunc: function(errorFn, data, status, xhr) {
         this.hideLoadingScreen();
@@ -38,9 +38,9 @@ var DataMixin = {
     /**
      * All Ajax success callbacks should go through this handler first
      * TODO: Find any that don't
-     * @param  {Function} errorFn 
-     * @param  {Object} data    
-     * @param  {$Object} xhr     
+     * @param  {Function} errorFn
+     * @param  {Object} data
+     * @param  {$Object} xhr
      */
     handleSuccessFunc: function(successFn, data, status, xhr) {
         this.hideLoadingScreen();
@@ -54,7 +54,7 @@ var DataMixin = {
      */
     ajaxCall: function(args) {
         headers = args.headers ? args.headers : {};
-        // Make this encoded version of password or something? 
+        // Make this encoded version of password or something?
         headers['authorization'] = "Basic U2t5TWF0aDpTa3kkJCQxMjMhQE1hdGg=";
         $.ajax({
             beforeSend: function(xhr, settings) {
@@ -63,7 +63,7 @@ var DataMixin = {
             // TODO(jchan): All endpoints have the same URL for now, but Chuks will be
             // converting to REST practices and we will eventually need URLs to point to
             // specific endpoints.
-            // 
+            //
             // When this happens, args.url should contain the route to the endpoint
             url: API_URL, // Eventually `url: API_URL + args.url`
             crossDomain: true,
@@ -107,23 +107,11 @@ var DataMixin = {
         })
     },
 
-    getIslands: function(successFn, errorFn) {
-        this.ajaxCall({
-            method: 'POST',
-            data: {
-                request: 'get_islands'
-            },
-            successFn: successFn,
-            errorFn: errorFn
-        });
-    },
-
     getIslandsWithDetails: function(successFn, errorFn) {
         this.ajaxCall({
             method: 'POST',
             data: {
-                request: 'get_islands',
-                details: true
+                request: 'get_islands'
             },
             successFn: successFn,
             errorFn: errorFn
@@ -159,6 +147,17 @@ var DataMixin = {
             successFn: successFn,
             errorFn: errorFn
         });
+    },
+
+    getTestQuestions: function(successFn, errorFn, data) {
+        this.ajaxCall({
+            method: 'POST',
+            data: {
+                request: 'fetch_all_island_at_grade_questions'
+            },
+            successFn: successFn,
+            errorFn: errorFn
+        })
     }
 };
 

@@ -14,11 +14,11 @@ var AppOverview = React.createClass({
 
     componentWillMount: function() {
         if (!Utils.Store.getStore('islandList')) {
-            this.getIslandsWithDetails(this.islandDataSuccess, this.islandDataError);    
+            this.getIslandsWithDetails(this.islandDataSuccess, this.islandDataError);
         } else {
             this.loadData(Utils.Store.getStore('islandList'));
         }
-        
+
         Utils.Dispatcher.register('islandList-change', [], this.handleListChange);
         Utils.Dispatcher.register('change-island-overview', [], this.handleChangeView);
         Utils.Dispatcher.dispatch('change-header-title', {
@@ -46,7 +46,7 @@ var AppOverview = React.createClass({
         };
     },
 
-    render: function() {   
+    render: function() {
 
         switch(this.state.view) {
         case 'create':
@@ -93,7 +93,7 @@ var AppOverview = React.createClass({
                 this.recordMap[record.id] = record;
                 var islandFilter = this.state.selectedIsland;
                 var gradeFilter = this.state.selectedGrade;
-                
+
                 if ((islandFilter && record.island_name !== islandFilter) || (gradeFilter && record.grade_level !== gradeFilter)) {
                     return;
                 }
@@ -181,7 +181,7 @@ var AppOverview = React.createClass({
                         </div>
                     </div>
                     {/* <div className="operations">
-                        <input className="button button--block" type="button" value="New" onClick={this.handleCreateNew} /> 
+                        <input className="button button--block" type="button" value="New" onClick={this.handleCreateNew} />
                     </div>*/}
                     <div className="line">
                         <div className="box size12of12">
@@ -212,8 +212,8 @@ var AppOverview = React.createClass({
             );
         default:
             return;
-        }     
-        
+        }
+
     },
 
     loadData: function(data) {
@@ -241,7 +241,7 @@ var AppOverview = React.createClass({
     },
 
     refreshData: function() {
-        this.getIslands(this.islandDataSuccess, this.islandDataError);
+        this.getIslandsWithDetails(this.islandDataSuccess, this.islandDataError);
     },
 
     islandDataSuccess: function(data, xhr, status) {
@@ -254,7 +254,7 @@ var AppOverview = React.createClass({
         Utils.Dispatcher.dispatch('error-message', {
             message: 'There was an error getting island data. Server responded: ' + data.responseJSON.msg
         });
-    },    
+    },
 
     handleListChange: function(data) {
         // console.log('LIST CHANGED>>>', data);
@@ -293,7 +293,7 @@ var AppOverview = React.createClass({
                         for (var key1 in arr[i]) {
                             data['app' + (i + 1) + '_' + key1] = arr[i][key1];
                         }
-                        
+
                     }
                     if (key.indexOf('video') !== -1) {
                         for (var key2 in arr[i]) {

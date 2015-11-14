@@ -14,11 +14,11 @@ var IslandOverview = React.createClass({
 
     componentWillMount: function() {
         if (!Utils.Store.getStore('islandList')) {
-            this.getIslandsWithDetails(this.islandDataSuccess, this.islandDataError);    
+            this.getIslandsWithDetails(this.islandDataSuccess, this.islandDataError);
         } else {
             this.loadData(Utils.Store.getStore('islandList'));
         }
-        
+
         Utils.Dispatcher.register('islandList-change', [], this.handleListChange);
         Utils.Dispatcher.register('change-island-overview', [], this.handleChangeView);
         Utils.Dispatcher.dispatch('change-header-title', {
@@ -44,7 +44,7 @@ var IslandOverview = React.createClass({
         };
     },
 
-    render: function() {   
+    render: function() {
 
         switch(this.state.view) {
         case 'create':
@@ -87,11 +87,15 @@ var IslandOverview = React.createClass({
             });
 
             var islandRows = [];
+
+            // For each island in the island list, add it to a mapping which
+            // allows us to easily retrieve it and do filtering based on
+            // the state of the filters
             this.state.islandList.forEach(function(record) {
                 this.recordMap[record.id] = record;
                 var islandFilter = this.state.selectedIsland;
                 var gradeFilter = this.state.selectedGrade;
-                
+
                 if ((islandFilter && record.island_name !== islandFilter) || (gradeFilter && record.grade_level !== gradeFilter)) {
                     return;
                 }
@@ -159,7 +163,7 @@ var IslandOverview = React.createClass({
                         </div>
                     </div>
                     {/* <div className="operations">
-                        <input className="button button--block" type="button" value="New" onClick={this.handleCreateNew} /> 
+                        <input className="button button--block" type="button" value="New" onClick={this.handleCreateNew} />
                     </div>*/}
                     <div className="line">
                         <div className="box size12of12">
@@ -190,8 +194,8 @@ var IslandOverview = React.createClass({
             );
         default:
             return;
-        }     
-        
+        }
+
     },
 
     loadData: function(data) {
@@ -202,7 +206,7 @@ var IslandOverview = React.createClass({
 
     refreshData: function() {
         Utils.Store.makeCall('getIslandsWithDetails');
-    }, 
+    },
 
     handleListChange: function(data) {
         // console.log('LIST CHANGED>>>', data);
@@ -232,7 +236,7 @@ var IslandOverview = React.createClass({
     handleEditRecord: function(event) {
         var id = event.target.id.slice(3);
         var data = this.recordMap[id];
-        
+
         for (var key in data) {
             if (data[key] instanceof Array)  {
                 var arr = data[key];
@@ -241,7 +245,7 @@ var IslandOverview = React.createClass({
                         for (var key1 in arr[i]) {
                             data['app' + (i + 1) + '_' + key1] = arr[i][key1];
                         }
-                        
+
                     }
                     if (key.indexOf('video') !== -1) {
                         for (var key2 in arr[i]) {
