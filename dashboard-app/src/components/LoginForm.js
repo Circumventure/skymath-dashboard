@@ -60,7 +60,39 @@ var LoginForm = React.createClass({
         // Register island list data call and make it
         Utils.Store.registerCall('getIslandsWithDetails', this.getIslandsWithDetails,
             function(data, xhr, status) {
-                Utils.Store.addDataToStore(JSON.parse(data).data.islands, 'islandList');
+                var data = JSON.parse(data).data;
+                var repeatCheck = [];
+
+                var gradeOptions = [{
+                    value: '',
+                    label: 'All'
+                }];
+
+                var islandOptions = [{
+                    value: '',
+                    label: 'All'
+                }];
+
+                data.islands.forEach(function(record) {
+                    if (repeatCheck.indexOf(record.grade_level) === -1) {
+                        repeatCheck.push(record.grade_level);
+                        gradeOptions.push({
+                            value: record.grade_level,
+                            label: record.grade_level
+                        });
+                    }
+                    if (repeatCheck.indexOf(record.island_name) === -1) {
+                        repeatCheck.push(record.island_name);
+                        islandOptions.push({
+                            value: record.island_name,
+                            label: record.island_name
+                        });
+                    }
+                });
+
+                Utils.Store.addDataToStore(data.islands, 'islandList');
+                Utils.Store.addDataToStore(islandOptions, 'islandOptions');
+                Utils.Store.addDataToStore(gradeOptions, 'gradeOptions');
             },
             function(data, xhr, status) {
                 Utils.Dispatcher.dispatch('error-message', {message: 'Error getting islands with details. Server responded: ' + data.responseJSON.msg});
@@ -80,21 +112,30 @@ var LoginForm = React.createClass({
             }
         );
 
-        // Register test question data call
-        Utils.Store.registerCall('getTestQuestions', this.updateIsland,
+        // Register test question data call, store data in a per-island test question store
+        Utils.Store.registerCall('getTestQuestions', this.getAllTestQuestions,
+            function(data, xhr, status) {
+                Utils.Store.addDataToStore(JSON.parse(data).data.questions, 'testQuestionList-' + JSON.parse(data).data.questions[0].island);
+            },
+            function(data, xhr, status) {
+                Utils.Dispatcher.dispatch('error-message', {message: 'Error getting test questions. Server responded: ' + data.responseJSON.msg});
+            }
+        );
+
+        Utils.Store.registerCall('updateTestQuestion', this.updateTestQuestion,
             function(data, xhr, status) {
                 var dataJSON = JSON.parse(data).data;
-                // Utils.Store.updateDataById(dataJSON, 'islandList', dataJSON.id);
+                var island = JSON.parse(data).data.island;
+                Utils.Store.updateDataById(dataJSON, 'testQuestionList-' + island, dataJSON.id);
 
                 // This gets all data all over again. Instead, try and just update the record
                 // that we just updated.
-                Utils.Store.makeCall('getIslandsWithDetails');
+                // Utils.Store.makeCall('getIslandsWithDetails');
             },
             function(data, xhr, status) {
                 Utils.Dispatcher.dispatch('error-message', {message: 'Error updating island. Server responded: ' + data.responseJSON.msg});
             }
         );
-
     },
 
     handleError: function(data, status, xhr) {

@@ -31,8 +31,8 @@ var Menu = React.createClass({
                 value: 'apps'
             },
             {
-                label: 'Island Detail',
-                value: 'island-detail'
+                label: 'Island Overview',
+                value: 'island-overview'
             },
 
         ];

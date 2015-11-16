@@ -153,8 +153,32 @@ var DataMixin = {
         this.ajaxCall({
             method: 'POST',
             data: {
-                request: 'fetch_all_island_at_grade_questions'
+                request: 'fetch_all_island_at_grade_questions',
+                grade: data && data['grade'],
+                island: data && data['island']
             },
+            successFn: successFn,
+            errorFn: errorFn
+        })
+    },
+
+    getAllTestQuestions: function(successFn, errorFn, data) {
+        this.ajaxCall({
+            method: 'POST',
+            data: {
+                request: 'fetch_all_island_questions',
+                island_name: data && data['island_name']
+            },
+            successFn: successFn,
+            errorFn: errorFn
+        })
+    },
+
+    updateTestQuestion: function(successFn, errorFn, data) {
+        data['request'] = 'update_question';
+        this.ajaxCall({
+            method: 'POST',
+            data: data,
             successFn: successFn,
             errorFn: errorFn
         })

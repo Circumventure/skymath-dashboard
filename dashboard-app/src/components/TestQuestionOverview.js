@@ -13,21 +13,18 @@ var IslandOverview = React.createClass({
     recordMap: {},
 
     componentWillMount: function() {
-        if (!Utils.Store.getStore('testQuestionList')) {
-            this.getTestQuestions(this.islandDataSuccess, this.islandDataError);
-        } else {
-            this.loadData(Utils.Store.getStore('islandList'));
-        }
-
-        Utils.Dispatcher.register('islandList-change', [], this.handleListChange);
-        Utils.Dispatcher.register('change-island-overview', [], this.handleChangeView);
+        Utils.Dispatcher.register('change-testQuestion-overview', [], this.handleChangeView);
         Utils.Dispatcher.dispatch('change-header-title', {
-            title: 'Islands:',
-            subtitle: 'Edit Islands'
+            title: 'Test Questions:',
+            subtitle: 'Edit Test Questions'
         });
     },
 
     componentWillUnmount: function() {
+        // Restore app width
+        var container = document.querySelector('.admin-app > .line > div');
+        $(container).addClass('size9of12').removeClass('size12of12');
+
         Utils.Dispatcher.dispatch('change-header-title', {
             title: '',
             subtitle: ''
@@ -36,7 +33,7 @@ var IslandOverview = React.createClass({
 
     getInitialState: function() {
         return {
-            islandList: [],
+            testQuestionList: [],
             selectedIsland: null,
             selectedGrade: null,
             view: 'overview',
@@ -47,85 +44,100 @@ var IslandOverview = React.createClass({
     render: function() {
 
         switch(this.state.view) {
-        case 'create':
-            return (
-                <IslandDetail mode={this.state.view} refresh={this.refreshData} />
-            );
-        case 'edit':
-            return (
-                <IslandDetail mode={this.state.view} data={this.state.selectedRecordData} refresh={this.refreshData} />
-            );
+        // case 'create':
+        //     return (
+        //         <IslandDetail mode={this.state.view} refresh={this.refreshData} />
+        //     );
+        // case 'edit':
+        //     return (
+        //         <IslandDetail mode={this.state.view} data={this.state.selectedRecordData} refresh={this.refreshData} />
+        //     );
         case 'overview':
-            var repeatCheck = [];
-
-            var grades = [{
-                value: '',
-                label: 'All'
-            }];
-            this.state.islandList.forEach(function(record) {
-                if (repeatCheck.indexOf(record.grade_level) === -1) {
-                    repeatCheck.push(record.grade_level);
-                    grades.push({
-                        value: record.grade_level,
-                        label: record.grade_level
-                    });
-                }
-            });
-
-            var islands = [{
-                value: '',
-                label: 'All'
-            }];
-            this.state.islandList.forEach(function(record) {
-                if (repeatCheck.indexOf(record.island_name) === -1) {
-                    repeatCheck.push(record.island_name);
-                    islands.push({
-                        value: record.island_name,
-                        label: record.island_name
-                    });
-                }
-            });
 
             var islandRows = [];
-            this.state.islandList.forEach(function(record) {
+            this.state.testQuestionList.forEach(function(record) {
                 this.recordMap[record.id] = record;
                 var islandFilter = this.state.selectedIsland;
                 var gradeFilter = this.state.selectedGrade;
 
-                if ((islandFilter && record.island_name !== islandFilter) || (gradeFilter && record.grade_level !== gradeFilter)) {
+                if ((islandFilter && record.island !== islandFilter) || (gradeFilter && record.grade.toString() !== gradeFilter)) {
                     return;
                 }
 
 
                 islandRows.push(
                     <div className="islandRow tableRow">
-                        <div className="islandName tableCell">
-                            {record.island_name}
+                        <div className="island tableCell">
+                            {record.island}
                         </div>
-                        <div className="islandDomain tableCell">
-                            {record.domain}
+                        <div className="standard tableCell">
+                            {record.standard}
                         </div>
-                        <div className="islandGradeLevel tableCell">
-                            {record.grade_level}
+                        <div className="source tableCell">
+                            {record.source}
                         </div>
-                        <div className="islandStandards tableCell">
-                            {record.standards}
+                        <div className="sourceId tableCell">
+                            {record.source_id}
                         </div>
-                        <div className="islandDescription tableCell">
-                            {record.parent_friendly_descriptions}
+                        <div className="isChecked tableCell">
+                            {record.is_checked}
                         </div>
-                        <div className="islandOperations tableCell">
-                            <input className="button button--block" type="button" value="Edit" data-islandname={record.island_name} id={'id-' + record.id} onClick={this.handleEditRecord} />
-                            {/* <input className="button button--block" type="button" value="Delete" /> */}
+                        <div className="diagnosticUse tableCell">
+                            {record.diagnostic_use}
+                        </div>
+                        <div className="gatekeeperUse tableCell">
+                            {record.gatekeeper_use}
+                        </div>
+                        <div className="questionText tableCell">
+                            {record.question_text}
+                        </div>
+                        <div className="questionSpoken tableCell">
+                            {record.question_spoken}
+                        </div>
+                        <div className="questionImage tableCell">
+                            {record.question_image}
+                        </div>
+                        <div className="answer tableCell">
+                            {record.answer}
+                        </div>
+                        <div className="choice1 tableCell">
+                            {record.choice1}
+                        </div>
+                        <div className="choice1Id tableCell">
+                            {record.choice1_id}
+                        </div>
+                        <div className="choice1Img tableCell">
+                            {record.choice1_img}
+                        </div>
+                        <div className="choice1 tableCell">
+                            {record.choice2}
+                        </div>
+                        <div className="choice1Id tableCell">
+                            {record.choice2_id}
+                        </div>
+                        <div className="choice1Img tableCell">
+                            {record.choice2_img}
                         </div>
                     </div>
                 );
                 return;
             }, this);
 
+            // Expand the view of just this component
+            var container = document.querySelector('.admin-app > .line > div');
+            $(container).removeClass('size9of12').addClass('size12of12');
+
             return (
-                <div className="island-detail IslandOverview">
-                    <Style scopeSelector=".IslandOverview"
+                <div className="island-detail TestQuestionOverview">
+                    <Style rules={{
+                        '#MainComponent': {
+                            overflow: 'scroll'
+                        },
+                        '.TestQuestionOverview .header': {
+                            fontSize: '0.85em !important'
+                        }
+                    }} />
+                    <Style scopeSelector=".TestQuestionOverview"
                         rules={{
                             '.tableRow': {
                                 display: 'table-row'
@@ -151,11 +163,11 @@ var IslandOverview = React.createClass({
                         }}
                     />
                     <div className="filters tableRow">
-                        <div className="select-grade tableCell filterContainers">
-                            <InputSelect label="Select Grade:" options={grades} id="selectedGrade" onChange={this.applyFilter} />
-                        </div>
                         <div className="select-island tableCell filterContainers">
-                            <InputSelect label="Select Island:" options={islands} id="selectedIsland" onChange={this.applyFilter} />
+                            <InputSelect label="Select Island:" options={Utils.Store.getStore('islandOptions')} id="selectedIsland" onChange={this.applyFilter} />
+                        </div>
+                        <div className="select-grade tableCell filterContainers">
+                            <InputSelect label="Select Grade:" options={Utils.Store.getStore('gradeOptions')} id="selectedGrade" onChange={this.applyFilter} />
                         </div>
                     </div>
                     {/* <div className="operations">
@@ -164,23 +176,56 @@ var IslandOverview = React.createClass({
                     <div className="line">
                         <div className="box size12of12">
                             <div className="islandRow header tableRow">
-                                <div className="islandName tableCell">
-                                    Island Name
+                                <div className="island tableCell">
+                                    island
                                 </div>
-                                <div className="islandDomain tableCell">
-                                    Domain
+                                <div className="standard tableCell">
+                                    standard
                                 </div>
-                                <div className="islandGradeLevel tableCell">
-                                    Grade Level
+                                <div className="source tableCell">
+                                    source
                                 </div>
-                                <div className="islandStandards tableCell">
-                                    Standards
+                                <div className="sourceId tableCell">
+                                    source_id
                                 </div>
-                                <div className="islandDescription tableCell">
-                                    Parent-friendly Description
+                                <div className="isChecked tableCell">
+                                    is_checked
                                 </div>
-                                <div className="islandOperations tableCell">
-                                    Operations
+                                <div className="diagnosticUse tableCell">
+                                    diagnostic_use
+                                </div>
+                                <div className="gatekeeperUse tableCell">
+                                    gatekeeper_use
+                                </div>
+                                <div className="questionText tableCell">
+                                    question_text
+                                </div>
+                                <div className="questionSpoken tableCell">
+                                    question_spoken
+                                </div>
+                                <div className="questionImage tableCell">
+                                    question_image
+                                </div>
+                                <div className="answer tableCell">
+                                    answer
+                                </div>
+                                <div className="choice1 tableCell">
+                                    choice1
+                                </div>
+                                <div className="choice1Id tableCell">
+                                    choice1_id
+                                </div>
+                                <div className="choice1Img tableCell">
+                                    choice1_img
+                                </div>
+                                <div className="choice1 tableCell">
+                                    choice2
+                                </div>
+                                <div className="choice1Id tableCell">
+                                    choice2_id
+                                </div>
+                                <div className="choice1Img tableCell">
+                                    choice2_img
                                 </div>
                             </div>
                             {islandRows}
@@ -196,7 +241,7 @@ var IslandOverview = React.createClass({
 
     loadData: function(data) {
         this.setState({
-            islandList: data
+            testQuestionList: data
         });
     },
 
@@ -216,6 +261,25 @@ var IslandOverview = React.createClass({
     },
 
     applyFilter: function(event) {
+        var islandName = event.target.value;
+        var localStore = Utils.Store.getStore('testQuestionList-' + islandName);
+        if (event.target.id === 'selectedIsland') {
+            if (localStore) {
+                this.setState({
+                    testQuestionList: localStore,
+                    selectedIsland: islandName
+                });
+            } else {
+                Utils.Store.makeCall('getTestQuestions', {
+                    island_name: islandName
+                });
+                Utils.Dispatcher.register('testQuestionList-' + event.target.value + '-change', [], this.handleListChange);
+                this.setState({
+                    selectedIsland: islandName
+                });
+            }
+            return;
+        }
         var value = event.target.value;
         var key = event.target.id;
         var newState = {};

@@ -56,36 +56,6 @@ var IslandOverview = React.createClass({
                 <IslandDetail mode={this.state.view} data={this.state.selectedRecordData} refresh={this.refreshData} />
             );
         case 'overview':
-            var repeatCheck = [];
-
-            var grades = [{
-                value: '',
-                label: 'All'
-            }];
-            this.state.islandList.forEach(function(record) {
-                if (repeatCheck.indexOf(record.grade_level) === -1) {
-                    repeatCheck.push(record.grade_level);
-                    grades.push({
-                        value: record.grade_level,
-                        label: record.grade_level
-                    });
-                }
-            });
-
-            var islands = [{
-                value: '',
-                label: 'All'
-            }];
-            this.state.islandList.forEach(function(record) {
-                if (repeatCheck.indexOf(record.island_name) === -1) {
-                    repeatCheck.push(record.island_name);
-                    islands.push({
-                        value: record.island_name,
-                        label: record.island_name
-                    });
-                }
-            });
-
             var islandRows = [];
 
             // For each island in the island list, add it to a mapping which
@@ -156,10 +126,10 @@ var IslandOverview = React.createClass({
                     />
                     <div className="filters tableRow">
                         <div className="select-grade tableCell filterContainers">
-                            <InputSelect label="Select Grade:" options={grades} id="selectedGrade" onChange={this.applyFilter} />
+                            <InputSelect label="Select Grade:" options={Utils.Store.getStore('gradeOptions')} id="selectedGrade" onChange={this.applyFilter} />
                         </div>
                         <div className="select-island tableCell filterContainers">
-                            <InputSelect label="Select Island:" options={islands} id="selectedIsland" onChange={this.applyFilter} />
+                            <InputSelect label="Select Island:" options={Utils.Store.getStore('islandOptions')} id="selectedIsland" onChange={this.applyFilter} />
                         </div>
                     </div>
                     {/* <div className="operations">

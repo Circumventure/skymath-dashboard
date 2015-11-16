@@ -11,15 +11,31 @@ var storeInstance, dispatcherInstance, Store = function() {
             throw Error('storeName is required')
         }
 
-        if (this._store[storeName] === undefined) {
+        var store = this._store[storeName];
+
+        if (store === undefined) {
             this._store[storeName] = data;
+            dispatcherInstance.dispatch(storeName + '-change',
+                storeInstance.getStore(storeName));
             return this._store[storeName];
         }
 
+        if ($.isArray(store)) {
+            if ($.isArray(data)) {
+                store = store.concat(data);
+                dispatcherInstance.dispatch(storeName + '-change',
+                    storeInstance.getStore(storeName));
+                return store;
+            } else {
+                throw Error('cannot combine an Object and an Array type store');
+            }
+        }
+
         // Performs a deep copy merge of named store with the provided data.
-        $.extend(true, this._store[storeName], data);
-        dispatcherInstance.dispatch(storeName + '-change', storeInstance.getStore(storeName));
-        return this._store[storeName];
+        $.extend(true, store, data);
+        dispatcherInstance.dispatch(storeName + '-change',
+            storeInstance.getStore(storeName));
+        return store;
     };
 
     this.updateDataById = function(data, storeName, id) {

@@ -5,6 +5,7 @@ var LoggedInHome = require('LoggedInHome');
 var IslandOverview = require('IslandOverview');
 var VideoOverview = require('VideoOverview');
 var AppOverview = require('AppOverview');
+var TestQuestionOverview = require('TestQuestionOverview');
 var FormMixin = require('FormMixin');
 var Utils = require('Utils');
 
@@ -27,7 +28,7 @@ var MainComponentContainer = React.createClass({
                     <LoggedInHome />
                 );
                 break;
-            case "island-detail":
+            case "island-overview":
                 return (
                     <IslandOverview view={this.state.data && this.state.data.view} />
                 );
@@ -38,6 +39,10 @@ var MainComponentContainer = React.createClass({
             case "videos":
                 return (
                     <VideoOverview view={this.state.data && this.state.data.view} />
+                );
+            case "test-questions":
+                return (
+                    <TestQuestionOverview view={this.state.data && this.state.data.view} />
                 );
             case "signout":
                 // Remove onbeforeunload handler when logged out
