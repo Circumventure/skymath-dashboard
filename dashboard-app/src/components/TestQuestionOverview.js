@@ -4,8 +4,12 @@ var Style = Radium.Style;
 
 var Utils = require('Utils');
 var DataMixin = require('DataMixin');
+var EditableTableCell = require('EditableTableCell');
 var InputSelect = require('InputSelect');
 var IslandDetail = require('IslandDetail');
+
+var islandOptions;
+var gradeOptions;
 
 var IslandOverview = React.createClass({
     mixins: [DataMixin],
@@ -53,8 +57,29 @@ var IslandOverview = React.createClass({
         //         <IslandDetail mode={this.state.view} data={this.state.selectedRecordData} refresh={this.refreshData} />
         //     );
         case 'overview':
-
-            var islandRows = [];
+            /**
+             * Dict of fields and whether they are editable or not
+             */
+            var fieldConfig = {
+                island: false,
+                standard: true,
+                source: true,
+                source_id: true,
+                is_checked: true,
+                diagnostic_use: true,
+                gatekeeper_use: true,
+                question_text: true,
+                question_spoken: true,
+                question_image: true,
+                answer: true,
+                choice1: true,
+                choice1_id: true,
+                choice1_img: true,
+                choice2: true,
+                choice2_id: true,
+                choice2_img: true
+            };
+            var islandData = [];
             this.state.testQuestionList.forEach(function(record) {
                 this.recordMap[record.id] = record;
                 var islandFilter = this.state.selectedIsland;
@@ -64,68 +89,54 @@ var IslandOverview = React.createClass({
                     return;
                 }
 
+                var islandRows = [];
+                for (var field in fieldConfig) {
+                    islandRows.push(
+                        <EditableTableCell recordId={record.id} name={field} value={record[field]} editable={fieldConfig[field]} />
+                    );
+                }
 
-                islandRows.push(
-                    <div className="islandRow tableRow">
-                        <div className="island tableCell">
-                            {record.island}
-                        </div>
-                        <div className="standard tableCell">
-                            {record.standard}
-                        </div>
-                        <div className="source tableCell">
-                            {record.source}
-                        </div>
-                        <div className="sourceId tableCell">
-                            {record.source_id}
-                        </div>
-                        <div className="isChecked tableCell">
-                            {record.is_checked}
-                        </div>
-                        <div className="diagnosticUse tableCell">
-                            {record.diagnostic_use}
-                        </div>
-                        <div className="gatekeeperUse tableCell">
-                            {record.gatekeeper_use}
-                        </div>
-                        <div className="questionText tableCell">
-                            {record.question_text}
-                        </div>
-                        <div className="questionSpoken tableCell">
-                            {record.question_spoken}
-                        </div>
-                        <div className="questionImage tableCell">
-                            {record.question_image}
-                        </div>
-                        <div className="answer tableCell">
-                            {record.answer}
-                        </div>
-                        <div className="choice1 tableCell">
-                            {record.choice1}
-                        </div>
-                        <div className="choice1Id tableCell">
-                            {record.choice1_id}
-                        </div>
-                        <div className="choice1Img tableCell">
-                            {record.choice1_img}
-                        </div>
-                        <div className="choice1 tableCell">
-                            {record.choice2}
-                        </div>
-                        <div className="choice1Id tableCell">
-                            {record.choice2_id}
-                        </div>
-                        <div className="choice1Img tableCell">
-                            {record.choice2_img}
-                        </div>
+                islandData.push(
+                    <div className="islandRow tableRow" id={'id_' + record.id}>
+                        {islandRows}
                     </div>
                 );
                 return;
             }, this);
 
+            var islandHeaderCells = [];
+            Object.keys(fieldConfig).map(function(field) {
+                islandHeaderCells.push(
+                    <div className={field + ' tableCell'}>
+                        {field}
+                    </div>
+                );
+            });
+
+            var islandHeader = [
+                <div className="islandRow header tableRow">
+                    {islandHeaderCells}
+                </div>
+            ];
             // Expand the view of just this component
             var container = document.querySelector('.admin-app > .line > div');
             $(container).removeClass('size9of12').addClass('size12of12');
+
+            if (!islandOptions) {
+                islandOptions = Utils.Store.getStore('islandOptions');
+            }
+
+            if (!gradeOptions) {
+                gradeOptions = [].concat(Utils.Store.getStore('gradeOptions'));
+                // TODO: Backend is storing kindergarten value as K for islands, 0
+                // for test questions :( Get them to fix...
+                for (var i = 0; i < gradeOptions.length; i++) {
+                    if (gradeOptions[i].value === 'K') {
+                        gradeOptions[i].value = 0;
+                        gradeOptions[i].label = 0;
+                    }
+                }
+            }
 
             return (
                 <div className="island-detail TestQuestionOverview">
@@ -139,11 +150,19 @@ var IslandOverview = React.createClass({
                     }} />
                     <Style scopeSelector=".TestQuestionOverview"
                         rules={{
+                            'a': {
+                                color: '#AC660E',
+                                fontSize: '.7em',
+                                textTransform: 'uppercase',
+                                fontWeight: '700',
+                                cursor: 'pointer'
+                            },
                             '.tableRow': {
                                 display: 'table-row'
                             },
                             '.tableCell': {
-                                display: 'table-cell'
+                                display: 'table-cell',
+                                verticalAlign: 'top'
                             },
                             '.filterContainers': {
                                 width: '50%',
@@ -164,10 +183,10 @@ var IslandOverview = React.createClass({
                     />
                     <div className="filters tableRow">
                         <div className="select-island tableCell filterContainers">
-                            <InputSelect label="Select Island:" options={Utils.Store.getStore('islandOptions')} id="selectedIsland" onChange={this.applyFilter} />
+                            <InputSelect label="Select Island:" options={islandOptions} id="selectedIsland" onChange={this.applyFilter} />
                         </div>
                         <div className="select-grade tableCell filterContainers">
-                            <InputSelect label="Select Grade:" options={Utils.Store.getStore('gradeOptions')} id="selectedGrade" onChange={this.applyFilter} />
+                            <InputSelect label="Select Grade:" options={gradeOptions} id="selectedGrade" onChange={this.applyFilter} />
                         </div>
                     </div>
                     {/* <div className="operations">
@@ -175,60 +194,8 @@ var IslandOverview = React.createClass({
                     </div>*/}
                     <div className="line">
                         <div className="box size12of12">
-                            <div className="islandRow header tableRow">
-                                <div className="island tableCell">
-                                    island
-                                </div>
-                                <div className="standard tableCell">
-                                    standard
-                                </div>
-                                <div className="source tableCell">
-                                    source
-                                </div>
-                                <div className="sourceId tableCell">
-                                    source_id
-                                </div>
-                                <div className="isChecked tableCell">
-                                    is_checked
-                                </div>
-                                <div className="diagnosticUse tableCell">
-                                    diagnostic_use
-                                </div>
-                                <div className="gatekeeperUse tableCell">
-                                    gatekeeper_use
-                                </div>
-                                <div className="questionText tableCell">
-                                    question_text
-                                </div>
-                                <div className="questionSpoken tableCell">
-                                    question_spoken
-                                </div>
-                                <div className="questionImage tableCell">
-                                    question_image
-                                </div>
-                                <div className="answer tableCell">
-                                    answer
-                                </div>
-                                <div className="choice1 tableCell">
-                                    choice1
-                                </div>
-                                <div className="choice1Id tableCell">
-                                    choice1_id
-                                </div>
-                                <div className="choice1Img tableCell">
-                                    choice1_img
-                                </div>
-                                <div className="choice1 tableCell">
-                                    choice2
-                                </div>
-                                <div className="choice1Id tableCell">
-                                    choice2_id
-                                </div>
-                                <div className="choice1Img tableCell">
-                                    choice2_img
-                                </div>
-                            </div>
-                            {islandRows}
+                            {islandHeader}
+                            {islandData}
                         </div>
                     </div>
                 </div>
@@ -236,6 +203,11 @@ var IslandOverview = React.createClass({
         default:
             return;
         }
+
+    },
+
+    onTableCellClick: function(event) {
+        var field = event.target.id;
 
     },
 
@@ -290,37 +262,6 @@ var IslandOverview = React.createClass({
     handleCreateNew: function() {
         this.setState({
             view: 'create'
-        });
-    },
-
-    handleEditRecord: function(event) {
-        var id = event.target.id.slice(3);
-        var data = this.recordMap[id];
-
-        for (var key in data) {
-            if (data[key] instanceof Array)  {
-                var arr = data[key];
-                for (var i = 0; i < arr.length; i++) {
-                    if (key.indexOf('app') !== -1) {
-                        for (var key1 in arr[i]) {
-                            data['app' + (i + 1) + '_' + key1] = arr[i][key1];
-                        }
-
-                    }
-                    if (key.indexOf('video') !== -1) {
-                        for (var key2 in arr[i]) {
-                            data['video' + (i + 1) + '_' + key2] = arr[i][key2];
-                        }
-                    }
-                }
-                delete data[key];
-            }
-        }
-
-        console.log("DA DATAA: ", data);
-        this.setState({
-            view: 'edit',
-            selectedRecordData: data
         });
     },
 
