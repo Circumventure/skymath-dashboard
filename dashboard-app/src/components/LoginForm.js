@@ -100,7 +100,7 @@ var LoginForm = React.createClass({
 
         Utils.Store.registerCall('updateIsland', this.updateIsland,
             function(data, xhr, status) {
-                var dataJSON = JSON.parse(data).data;
+                var dataJSON = JSON.parse(data).data[0];
                 Utils.Store.updateDataById(dataJSON, 'islandList', dataJSON.id);
 
                 // This gets all data all over again. Instead, try and just update the record
