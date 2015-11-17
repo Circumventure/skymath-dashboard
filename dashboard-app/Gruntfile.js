@@ -31,7 +31,8 @@ module.exports = function(grunt) {
             dist: {
                 files: {
                     './build/style/common.css' : './src/skymath-common/style/common.scss',
-                    './build/style/style.css' : './src/style/style.scss'
+                    './build/style/style.css' : './src/style/style.scss',
+                    './build/style/jquery/jquery-ui.min.css' : './src/skymath-common/style/jquery/jquery-ui.min.scss'
                 }
             }
         },
@@ -64,7 +65,7 @@ module.exports = function(grunt) {
                         cwd: './src/img',
                         src: '*',
                         dest: './build/img/'
-                    }                    
+                    }
                 ]
             }
         }
