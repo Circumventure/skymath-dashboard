@@ -194,6 +194,18 @@ var DataMixin = {
             successFn: successFn,
             errorFn: errorFn
         });
+    },
+
+    createTestQuestion: function(successFn, errorFn, data) {
+        data['request'] = 'add_question';
+        data['island_name'] = data['island'];
+        delete data['island'];
+        this.ajaxCall({
+            method: 'POST',
+            data: data,
+            successFn: successFn,
+            errorFn: errorFn
+        });
     }
 };
 

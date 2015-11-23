@@ -8,6 +8,7 @@ var DataMixin = require('DataMixin');
 var EditableTableCell = require('EditableTableCell');
 var InputSelect = require('InputSelect');
 var IslandDetail = require('IslandDetail');
+var TestQuestionDetail = require('TestQuestionDetail');
 
 var islandOptions;
 var gradeOptions;
@@ -49,10 +50,10 @@ var IslandOverview = React.createClass({
     render: function() {
 
         switch(this.state.view) {
-        // case 'create':
-        //     return (
-        //         <IslandDetail mode={this.state.view} refresh={this.refreshData} />
-        //     );
+        case 'create':
+            return (
+                <TestQuestionDetail mode={this.state.view} refresh={this.refreshData} data={{ island: this.state.selectedIsland }}/>
+            );
         // case 'edit':
         //     return (
         //         <IslandDetail mode={this.state.view} data={this.state.selectedRecordData} refresh={this.refreshData} />
@@ -193,9 +194,9 @@ var IslandOverview = React.createClass({
                             <InputSelect label="Select Grade:" options={gradeOptions} id="selectedGrade" onChange={this.applyFilter} />
                         </div>
                     </div>
-                    {/* <div className="operations">
-                        <input className="button button--block" type="button" value="New" onClick={this.handleCreateNew} />
-                    </div>*/}
+                    <div className="operations">
+                        {this.state.selectedIsland ? [<input className="button button--block" type="button" value="New" onClick={this.handleCreateNew} />] : []}
+                    </div>
                     <div className="line">
                         <div className="box size12of12">
                             {islandHeader}

@@ -147,6 +147,21 @@ var LoginForm = React.createClass({
             }
         );
 
+        Utils.Store.registerCall('createTestQuestion', this.createTestQuestion,
+            function(data, xhr, status) {
+                var dataJSON = JSON.parse(data).data;
+                var island = JSON.parse(data).data.island;
+                Utils.Store.updateDataById(dataJSON, 'testQuestionList-' + island, dataJSON.id);
+
+                // This gets all data all over again. Instead, try and just update the record
+                // that we just updated.
+                // Utils.Store.makeCall('getIslandsWithDetails');
+            },
+            function(data, xhr, status) {
+                Utils.Dispatcher.dispatch('error-message', {message: 'Error adding question. Server responded: ' + data.responseJSON.msg});
+            }
+        );
+
         Utils.Store.registerCall('deleteTestQuestion', this.deleteTestQuestion,
             function(data, xhr, status, origData) {
                 var map = Utils.Store.getStore('questionIdToIslandNameMap');
