@@ -21,15 +21,16 @@ var DataMixin = {
      * @param  {Function} errorFn
      * @param  {Object} data
      * @param  {$Object} xhr
+     * @param {Object} origData
      */
-    handleErrorFunc: function(errorFn, data, status, xhr) {
+    handleErrorFunc: function(errorFn, data, status, xhr, origData) {
         this.hideLoadingScreen();
 
         if (data && data.responseJSON) {
-            errorFn(data, status, xhr);
+            errorFn(data, status, xhr, origData);
         } else if (data && data.responseText) {
             data.responseJSON = JSON.parse(data.responseText);
-            errorFn(data, status, xhr);
+            errorFn(data, status, xhr, origData);
         } else {
             Utils.Dispatcher.dispatch('error-message', {message: "An unexpected error has occurred. Please contact jessicachanstudios@gmail.com."});
         }
@@ -41,10 +42,11 @@ var DataMixin = {
      * @param  {Function} errorFn
      * @param  {Object} data
      * @param  {$Object} xhr
+     * @param {Object} origData
      */
-    handleSuccessFunc: function(successFn, data, status, xhr) {
+    handleSuccessFunc: function(successFn, data, status, xhr, origData) {
         this.hideLoadingScreen();
-        successFn(data, status, xhr);
+        successFn(data, status, xhr, origData);
     },
 
     /**
@@ -70,10 +72,10 @@ var DataMixin = {
             method: args.method,
             data: args.data,
             success: function(data, status, xhr) {
-                this.handleSuccessFunc(args.successFn, data, status, xhr);
+                this.handleSuccessFunc(args.successFn, data, status, xhr, args.data);
             }.bind(this),
             error: function(data, status, xhr) {
-                this.handleErrorFunc(args.errorFn, data, status, xhr);
+                this.handleErrorFunc(args.errorFn, data, status, xhr, args.data);
             }.bind(this),
             headers: headers
         });
@@ -159,7 +161,7 @@ var DataMixin = {
             },
             successFn: successFn,
             errorFn: errorFn
-        })
+        });
     },
 
     getAllTestQuestions: function(successFn, errorFn, data) {
@@ -171,7 +173,7 @@ var DataMixin = {
             },
             successFn: successFn,
             errorFn: errorFn
-        })
+        });
     },
 
     updateTestQuestion: function(successFn, errorFn, data) {
@@ -181,7 +183,17 @@ var DataMixin = {
             data: data,
             successFn: successFn,
             errorFn: errorFn
-        })
+        });
+    },
+
+    deleteTestQuestion: function(successFn, errorFn, data) {
+        data['request'] = 'remove_question';
+        this.ajaxCall({
+            method: 'POST',
+            data: data,
+            successFn: successFn,
+            errorFn: errorFn
+        });
     }
 };
 

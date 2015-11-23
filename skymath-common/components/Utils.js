@@ -46,8 +46,26 @@ var storeInstance, dispatcherInstance, Store = function() {
         var store = this._store[storeName];
 
         for (var i = 0; i < store.length; i++) {
-            if (store[i].id === id) {
+            if (store[i].id == id) {
                 store[i] = data;
+                dispatcherInstance.dispatch(storeName + '-change',      storeInstance.getStore(storeName));
+                return;
+            }
+        }
+
+        throw Error(id + 'doesn\'t exist in ' + storeName);
+    };
+
+    this.removeDataById = function(storeName, id) {
+        if (!this._store[storeName]) {
+            throw Error(storeName + ' doesn\'t exist');
+        }
+
+        var store = this._store[storeName];
+
+        for (var i = 0; i < store.length; i++) {
+            if (store[i].id == id) {
+                store.splice(i, 1);
                 dispatcherInstance.dispatch(storeName + '-change', storeInstance.getStore(storeName));
                 return;
             }
