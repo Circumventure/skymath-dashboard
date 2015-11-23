@@ -2,6 +2,7 @@ var React = require('react');
 var Radium = require('radium');
 var Style = Radium.Style;
 
+var AlertModal = require('AlertModal');
 var Utils = require('Utils');
 var DataMixin = require('DataMixin');
 var EditableTableCell = require('EditableTableCell');
@@ -99,6 +100,9 @@ var IslandOverview = React.createClass({
                 islandData.push(
                     <div className="islandRow tableRow" id={'id_' + record.id}>
                         {islandRows}
+                        <div className='deleteButton tableCell'>
+                            <button className="button button--block" type="button" value={record.id} onClick={this.handleDelete}>Delete</button>
+                        </div>
                     </div>
                 );
                 return;
@@ -263,6 +267,24 @@ var IslandOverview = React.createClass({
         this.setState({
             view: 'create'
         });
+    },
+
+    handleDelete: function(event) {
+        var handleConfirm = function(questionId) {
+            React.unmountComponentAtNode(document.getElementById('alert'));
+            Utils.Store.makeCall('deleteTestQuestion', {
+                question_id: questionId
+            });
+        };
+
+        var handleCancel = function() {
+            React.unmountComponentAtNode(document.getElementById('alert'));
+        };
+
+        React.render(
+            <AlertModal handleConfirm={handleConfirm} handleCancel={handleCancel} data={event.target.value} confirmMsg="Confirm" cancelMsg="Cancel" message="This will delete this question. Are you sure?" />,
+            document.getElementById('alert')
+        );
     },
 
     compnoentDidMount: function() {
