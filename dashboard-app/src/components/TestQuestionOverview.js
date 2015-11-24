@@ -92,9 +92,16 @@ var IslandOverview = React.createClass({
                 }
 
                 var islandRows = [];
+                var imageFields = [
+                    'question_image',
+                    'choice1_img',
+                    'choice2_img'
+                ];
+
                 for (var field in fieldConfig) {
+                    var imageFieldType = imageFields.indexOf(field) > -1 ? 'image' : '';
                     islandRows.push(
-                        <EditableTableCell recordId={record.id} name={field} value={record[field]} editable={fieldConfig[field]} />
+                        <EditableTableCell recordId={record.id} name={field} value={record[field]} editable={fieldConfig[field]} fieldType={imageFieldType} />
                     );
                 }
 
@@ -208,11 +215,6 @@ var IslandOverview = React.createClass({
         default:
             return;
         }
-
-    },
-
-    onTableCellClick: function(event) {
-        var field = event.target.id;
 
     },
 
