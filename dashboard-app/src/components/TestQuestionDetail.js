@@ -4,6 +4,7 @@ var Utils = require('Utils');
 var DataMixin = require('DataMixin');
 var InputFile = require('InputFile');
 var InputText = require('InputText');
+var InputSelect = require('InputSelect');
 
 var TestQuestionDetail = React.createClass({
     mixins: [DataMixin],
@@ -85,6 +86,15 @@ var TestQuestionDetail = React.createClass({
                     </div>
                 );
             }
+
+            // If this is the "island" field, populate a select list instead of
+            // a text field
+            if (field === 'island') {
+                return (
+                    <InputSelect label="Select Island:" options={this.props.islandOptions} id="island" onChange={this.handleChange} value={this.state[field]} />
+                );
+            }
+
             return (
                 <InputText className="fieldset fieldset--addedit" labelClass="label" inputClass={field + ' input'} id={field} label={field} value={this.state[field]} onChange={this.handleChange} />
             );

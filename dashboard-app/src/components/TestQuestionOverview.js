@@ -49,10 +49,26 @@ var IslandOverview = React.createClass({
 
     render: function() {
 
+        if (!islandOptions) {
+            islandOptions = Utils.Store.getStore('islandOptions');
+        }
+
+        if (!gradeOptions) {
+            gradeOptions = [].concat(Utils.Store.getStore('gradeOptions'));
+            // TODO: Backend is storing kindergarten value as K for islands, 0
+            // for test questions :( Get them to fix...
+            for (var i = 0; i < gradeOptions.length; i++) {
+                if (gradeOptions[i].value === 'K') {
+                    gradeOptions[i].value = 0;
+                    gradeOptions[i].label = 0;
+                }
+            }
+        }
+
         switch(this.state.view) {
         case 'create':
             return (
-                <TestQuestionDetail mode={this.state.view} refresh={this.refreshData} data={{ island: this.state.selectedIsland }}/>
+                <TestQuestionDetail mode={this.state.view} refresh={this.refreshData} data={{ island: this.state.selectedIsland }} islandOptions={islandOptions} />
             );
         // case 'edit':
         //     return (
@@ -133,22 +149,6 @@ var IslandOverview = React.createClass({
             // Expand the view of just this component
             var container = document.querySelector('.admin-app > .line > div');
             $(container).removeClass('size9of12').addClass('size12of12');
-
-            if (!islandOptions) {
-                islandOptions = Utils.Store.getStore('islandOptions');
-            }
-
-            if (!gradeOptions) {
-                gradeOptions = [].concat(Utils.Store.getStore('gradeOptions'));
-                // TODO: Backend is storing kindergarten value as K for islands, 0
-                // for test questions :( Get them to fix...
-                for (var i = 0; i < gradeOptions.length; i++) {
-                    if (gradeOptions[i].value === 'K') {
-                        gradeOptions[i].value = 0;
-                        gradeOptions[i].label = 0;
-                    }
-                }
-            }
 
             return (
                 <div className="island-detail TestQuestionOverview">

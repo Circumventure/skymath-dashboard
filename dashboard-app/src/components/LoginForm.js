@@ -151,7 +151,7 @@ var LoginForm = React.createClass({
             function(data, xhr, status) {
                 var dataJSON = JSON.parse(data).data;
                 var island = JSON.parse(data).data.island;
-                Utils.Store.updateDataById(dataJSON, 'testQuestionList-' + island, dataJSON.id);
+                Utils.Store.addDataToStore(dataJSON, 'testQuestionList-' + island);
 
                 // This gets all data all over again. Instead, try and just update the record
                 // that we just updated.
