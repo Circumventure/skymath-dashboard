@@ -95,7 +95,13 @@ var IslandOverview = React.createClass({
                 choice1_img: true,
                 choice2: true,
                 choice2_id: true,
-                choice2_img: true
+                choice2_img: true,
+                choice3: true,
+                choice3_id: true,
+                choice3_img: true,
+                choice4: true,
+                choice4_id: true,
+                choice4_img: true
             };
             var islandData = [];
             this.state.testQuestionList.forEach(function(record) {
@@ -111,7 +117,9 @@ var IslandOverview = React.createClass({
                 var imageFields = [
                     'question_image',
                     'choice1_img',
-                    'choice2_img'
+                    'choice2_img',
+                    'choice3_img',
+                    'choice4_img'
                 ];
 
                 for (var field in fieldConfig) {

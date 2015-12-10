@@ -30,7 +30,15 @@ var TestQuestionDetail = React.createClass({
             choice2: '',
             choice2_id: '',
             choice2_img_upload: '',
-            choice2_img: ''
+            choice2_img: '',
+            choice3: '',
+            choice3_id: '',
+            choice3_img_upload: '',
+            choice3_img: '',
+            choice4: '',
+            choice4_id: '',
+            choice4_img_upload: '',
+            choice4_img: ''
         };
     },
 
@@ -45,6 +53,8 @@ var TestQuestionDetail = React.createClass({
         var urlFields = [
             'choice1_img',
             'choice2_img',
+            'choice3_img',
+            'choice4_img',
             'question_image'
         ];
         if (urlFields.indexOf(fieldname) > -1) {
@@ -172,6 +182,8 @@ var TestQuestionDetail = React.createClass({
         var fieldsToDelete = [
             'choice1_img',
             'choice2_img',
+            'choice3_img',
+            'choice4_img',
             'question_image'
         ];
         for (var i = 0; i < fieldsToDelete.length; i++) {
