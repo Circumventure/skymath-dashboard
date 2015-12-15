@@ -2,11 +2,13 @@ var React = require('react');
 var Radium = require('radium');
 var Style = Radium.Style;
 
+var AlertModal = require('AlertModal');
 var Utils = require('Utils');
 var DataMixin = require('DataMixin');
 var EditableTableCell = require('EditableTableCell');
 var InputSelect = require('InputSelect');
 var IslandDetail = require('IslandDetail');
+var TestQuestionDetail = require('TestQuestionDetail');
 
 var islandOptions;
 var gradeOptions;
@@ -47,11 +49,27 @@ var IslandOverview = React.createClass({
 
     render: function() {
 
+        if (!islandOptions) {
+            islandOptions = Utils.Store.getStore('islandOptions');
+        }
+
+        if (!gradeOptions) {
+            gradeOptions = [].concat(Utils.Store.getStore('gradeOptions'));
+            // TODO: Backend is storing kindergarten value as K for islands, 0
+            // for test questions :( Get them to fix...
+            for (var i = 0; i < gradeOptions.length; i++) {
+                if (gradeOptions[i].value === 'K') {
+                    gradeOptions[i].value = 0;
+                    gradeOptions[i].label = 0;
+                }
+            }
+        }
+
         switch(this.state.view) {
-        // case 'create':
-        //     return (
-        //         <IslandDetail mode={this.state.view} refresh={this.refreshData} />
-        //     );
+        case 'create':
+            return (
+                <TestQuestionDetail mode={this.state.view} refresh={this.refreshData} data={{ island: this.state.selectedIsland }} islandOptions={islandOptions} />
+            );
         // case 'edit':
         //     return (
         //         <IslandDetail mode={this.state.view} data={this.state.selectedRecordData} refresh={this.refreshData} />
@@ -77,7 +95,13 @@ var IslandOverview = React.createClass({
                 choice1_img: true,
                 choice2: true,
                 choice2_id: true,
-                choice2_img: true
+                choice2_img: true,
+                choice3: true,
+                choice3_id: true,
+                choice3_img: true,
+                choice4: true,
+                choice4_id: true,
+                choice4_img: true
             };
             var islandData = [];
             this.state.testQuestionList.forEach(function(record) {
@@ -90,15 +114,27 @@ var IslandOverview = React.createClass({
                 }
 
                 var islandRows = [];
+                var imageFields = [
+                    'question_image',
+                    'choice1_img',
+                    'choice2_img',
+                    'choice3_img',
+                    'choice4_img'
+                ];
+
                 for (var field in fieldConfig) {
+                    var imageFieldType = imageFields.indexOf(field) > -1 ? 'image' : '';
                     islandRows.push(
-                        <EditableTableCell recordId={record.id} name={field} value={record[field]} editable={fieldConfig[field]} />
+                        <EditableTableCell recordId={record.id} name={field} value={record[field]} editable={fieldConfig[field]} fieldType={imageFieldType} />
                     );
                 }
 
                 islandData.push(
                     <div className="islandRow tableRow" id={'id_' + record.id}>
                         {islandRows}
+                        <div className='deleteButton tableCell'>
+                            <button className="button button--block" type="button" value={record.id} onClick={this.handleDelete}>Delete</button>
+                        </div>
                     </div>
                 );
                 return;
@@ -121,22 +157,6 @@ var IslandOverview = React.createClass({
             // Expand the view of just this component
             var container = document.querySelector('.admin-app > .line > div');
             $(container).removeClass('size9of12').addClass('size12of12');
-
-            if (!islandOptions) {
-                islandOptions = Utils.Store.getStore('islandOptions');
-            }
-
-            if (!gradeOptions) {
-                gradeOptions = [].concat(Utils.Store.getStore('gradeOptions'));
-                // TODO: Backend is storing kindergarten value as K for islands, 0
-                // for test questions :( Get them to fix...
-                for (var i = 0; i < gradeOptions.length; i++) {
-                    if (gradeOptions[i].value === 'K') {
-                        gradeOptions[i].value = 0;
-                        gradeOptions[i].label = 0;
-                    }
-                }
-            }
 
             return (
                 <div className="island-detail TestQuestionOverview">
@@ -189,9 +209,9 @@ var IslandOverview = React.createClass({
                             <InputSelect label="Select Grade:" options={gradeOptions} id="selectedGrade" onChange={this.applyFilter} />
                         </div>
                     </div>
-                    {/* <div className="operations">
-                        <input className="button button--block" type="button" value="New" onClick={this.handleCreateNew} />
-                    </div>*/}
+                    <div className="operations">
+                        {this.state.selectedIsland ? [<input className="button button--block" type="button" value="New" onClick={this.handleCreateNew} />] : []}
+                    </div>
                     <div className="line">
                         <div className="box size12of12">
                             {islandHeader}
@@ -203,11 +223,6 @@ var IslandOverview = React.createClass({
         default:
             return;
         }
-
-    },
-
-    onTableCellClick: function(event) {
-        var field = event.target.id;
 
     },
 
@@ -263,6 +278,24 @@ var IslandOverview = React.createClass({
         this.setState({
             view: 'create'
         });
+    },
+
+    handleDelete: function(event) {
+        var handleConfirm = function(questionId) {
+            React.unmountComponentAtNode(document.getElementById('alert'));
+            Utils.Store.makeCall('deleteTestQuestion', {
+                question_id: questionId
+            });
+        };
+
+        var handleCancel = function() {
+            React.unmountComponentAtNode(document.getElementById('alert'));
+        };
+
+        React.render(
+            <AlertModal handleConfirm={handleConfirm} handleCancel={handleCancel} data={event.target.value} confirmMsg="Confirm" cancelMsg="Cancel" message="This will delete this question. Are you sure?" />,
+            document.getElementById('alert')
+        );
     },
 
     compnoentDidMount: function() {

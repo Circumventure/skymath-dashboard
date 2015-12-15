@@ -17,7 +17,7 @@
     font-weight: 300;
 }
 
-input, select {
+input, select, .alert {
     color: black;
 }
 
@@ -120,6 +120,6 @@ input, select {
     }
 }
 
-.IslandDetail input[type=text] {
+.TestQuestionDetail input[type=text], .IslandDetail input[type=text] {
     width: 90%
 }

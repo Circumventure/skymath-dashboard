@@ -115,7 +115,17 @@ var LoginForm = React.createClass({
         // Register test question data call, store data in a per-island test question store
         Utils.Store.registerCall('getTestQuestions', this.getAllTestQuestions,
             function(data, xhr, status) {
-                Utils.Store.addDataToStore(JSON.parse(data).data.questions, 'testQuestionList-' + JSON.parse(data).data.questions[0].island);
+                var islandName = JSON.parse(data).data.questions[0].island;
+                var storeName = 'testQuestionList-' + islandName;
+                Utils.Store.addDataToStore(JSON.parse(data).data.questions, storeName);
+
+                // Update question_id to island_name map
+                var newMap = {};
+                var storeSource = Utils.Store.getStore(storeName);
+                for (var i = 0; i < storeSource.length; i++) {
+                    newMap[storeSource[i].id] = storeSource[i].island;
+                }
+                Utils.Store.addDataToStore(newMap, 'questionIdToIslandNameMap');
             },
             function(data, xhr, status) {
                 Utils.Dispatcher.dispatch('error-message', {message: 'Error getting test questions. Server responded: ' + data.responseJSON.msg});
@@ -133,9 +143,35 @@ var LoginForm = React.createClass({
                 // Utils.Store.makeCall('getIslandsWithDetails');
             },
             function(data, xhr, status) {
-                Utils.Dispatcher.dispatch('error-message', {message: 'Error updating island. Server responded: ' + data.responseJSON.msg});
+                Utils.Dispatcher.dispatch('error-message', {message: 'Error updating question. Server responded: ' + data.responseJSON.msg});
             }
         );
+
+        Utils.Store.registerCall('createTestQuestion', this.createTestQuestion,
+            function(data, xhr, status) {
+                var dataJSON = JSON.parse(data).data;
+                var island = JSON.parse(data).data.island;
+                Utils.Store.addDataToStore(dataJSON, 'testQuestionList-' + island);
+
+                // This gets all data all over again. Instead, try and just update the record
+                // that we just updated.
+                // Utils.Store.makeCall('getIslandsWithDetails');
+            },
+            function(data, xhr, status) {
+                Utils.Dispatcher.dispatch('error-message', {message: 'Error adding question. Server responded: ' + data.responseJSON.msg});
+            }
+        );
+
+        Utils.Store.registerCall('deleteTestQuestion', this.deleteTestQuestion,
+            function(data, xhr, status, origData) {
+                var map = Utils.Store.getStore('questionIdToIslandNameMap');
+                var islandName = map[origData['question_id']];
+                Utils.Store.removeDataById('testQuestionList-' + islandName, origData['question_id']);
+            },
+            function(data, xhr, status) {
+                Utils.Dispatcher.dispatch('error-message', {message: 'Error deleting question. Server responded: ' + data.responseJSON.msg});
+            }
+    );
     },
 
     handleError: function(data, status, xhr) {
