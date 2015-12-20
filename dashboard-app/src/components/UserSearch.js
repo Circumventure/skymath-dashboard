@@ -8,6 +8,10 @@ var UserSearch = React.createClass({
     mixins: [FormMixin],
 
     componentWillMount: function() {
+        Utils.Dispatcher.dispatch('change-header-title', {
+            title: 'Families:',
+            subtitle: 'Search Families By Email'
+        });
         Utils.Dispatcher.dispatch('change-menu-highlight', {
             current: 'user-search'
         });

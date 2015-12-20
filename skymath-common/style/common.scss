@@ -45,9 +45,17 @@ $activeBlue: #3fa1bc;
 .box {
     width: 100%;
 
-    &.col-2 {
+    &.col-2, &.col {
         display: inline-block;
         vertical-align: top;
+    }
+
+    &.size1of12 {
+        width: 8.33333333%;
+    }
+
+    &.size2of12 {
+        width: 16.6666666667%;
     }
 
     &.size3of12 {

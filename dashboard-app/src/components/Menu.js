@@ -80,10 +80,10 @@ var Menu = React.createClass({
                         <li className={'menu-item ' + (this.state.current === 'admin' ? 'active' : '')} onClick={this.handleMenuClick} id="adminSubmenu">
                             <button className="menu-label">Admin</button>
                         </li>
-                        <ul className={this.state.adminSubmenuVisibility + " sub-menu"} id="adminSubmenu">
+                        <ul className={this.state.adminSubmenuVisibility + " sub-menu"}>
                             {adminSubmenuItems}
                         </ul>
-                        <ul className={this.state.userSearchSubmenuVisibility + " sub-menu usersearch-submenu"} style={{ right: '222px' }} id="userSearchSubmenu">
+                        <ul className={this.state.userSearchSubmenuVisibility + " sub-menu usersearch-submenu"} style={{ right: '222px' }}>
                             {userSearchSubmenuItems}
                         </ul>
                     </ul>
