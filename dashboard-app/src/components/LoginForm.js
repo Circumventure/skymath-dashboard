@@ -190,6 +190,7 @@ var LoginForm = React.createClass({
         Utils.Store.registerCall('getStudents', this.getStudents,
             function(data, xhr, status, origData) {
                 var data = JSON.parse(data).data;
+                Utils.Store.removeStore('studentData');
                 Utils.Store.addDataToStore(data, 'studentData');
             },
             function(data, xhr, status) {

@@ -59,12 +59,19 @@ var UserSearch = React.createClass({
         var studentFilter = Utils.Store.getStore('studentFilters');
         for (var key in studentFilter) {
             filters[key] = optionsFactory(studentFilter[key]);
+
+            // Because the integrity of the data is bad except for grades, we need
+            // to allow for a blank value as a filter.
+            if (key !== "grades") {
+                filters[key].unshift({
+                    label: '-- Blank Value --',
+                    value: ''
+                });
+            }
+
             filters[key].unshift({
                 label: '-- Select one --',
                 value: null
-            }, {
-                label: '-- Blank Value --',
-                value: ''
             });
         }
 
@@ -182,6 +189,7 @@ var UserSearch = React.createClass({
     },
 
     submitForm: function() {
+        this.clearAllMessages();
         var grade = $('#grade').val();
         var city = $('#city').val();
         var state = $('#state').val();
