@@ -139,8 +139,8 @@ var UserSearch = React.createClass({
                         <p className="h3">{this.state.familyId}</p>
                     </div>
                     <div className="display-inline-block float-right controls">
-                        <p className={'arrow display-inline-block ' + (this.state.prevIndex ? '' : 'disabled')} id="goBack" onClick={this.handleChangePos}>{String.fromCharCode(9664)}</p>
-                        <p className={"arrow display-inline-block " + (this.state.nextIndex ? "" : "disabled")} id="goForward" onClick={this.handleChangePos}>{String.fromCharCode(9654)}</p>
+                        <p className={'arrow display-inline-block ' + (this.state.prevIndex === null ? 'disabled' : '')} id="goBack" onClick={this.handleGoBack}>{String.fromCharCode(9664)}</p>
+                        <p className={"arrow display-inline-block " + (this.state.nextIndex === null ? 'disabled' : '')} id="goForward" onClick={this.handleGoForward}>{String.fromCharCode(9654)}</p>
                     </div>
                 </div>
                 <div className="line">
@@ -168,24 +168,32 @@ var UserSearch = React.createClass({
 
     handleReceiveData: function(data) {
         var currIndex = this.state.currIndex;
-        
-        // Do some data sanitization for this view
-        var newCurriculum = [];
-        if (data['curriculum']) {
-            for (var i = 0; i < data['curriculum'].length; i++) {
-                newCurriculum.push(data['curriculum'][i].name)
-            }
-        }
 
-        var newIslands = [];
-        if (data['islands']) {
-            for (var i = 0; i < data['islands'].length; i++) {
-                newIslands.push(data['islands'][i].island_name)
+        var sanitizeData = function(dataEntry) {
+            // Do some data sanitization for this view
+            var newCurriculum = [];
+            if (dataEntry['curriculum']) {
+                for (var i = 0; i < data['curriculum'].length; i++) {
+                    newCurriculum.push(data['curriculum'][i].name)
+                }
             }
-        }
 
-        data['curriculum'] = newCurriculum.join();
-        data['islands'] = newIslands.join();
+            var newIslands = [];
+            if (dataEntry['islands']) {
+                for (var i = 0; i < data['islands'].length; i++) {
+                    newIslands.push(data['islands'][i].island_name)
+                }
+            }
+
+            dataEntry['curriculum'] = newCurriculum.join();
+            dataEntry['islands'] = newIslands.join();
+
+            return dataEntry;
+        };
+
+        for (var i = 0; i < data.length; i++) {
+            data[i] = sanitizeData(data[i]);
+        }
 
         this.setState({
             familyId: data[currIndex]['family_id'],
@@ -196,19 +204,30 @@ var UserSearch = React.createClass({
         });
     },
 
-    handleChangePos: function(event) {
-        var newPos;
-        if (event.target.id === 'goBack') {
-            newPos = this.state.currIndex - 1;
-        } else {
-            newPos = this.state.currIndex + 1;
+    handleGoBack: function() {
+        var newPos, curr = this.state.currIndex;
+        if (this.state.data[curr-1]) {
+            newPos = curr - 1;
+            this.setState({
+                familyId: this.state.data[newPos].family_id,
+                currIndex: newPos,
+                prevIndex: this.state.data[newPos-1] ? newPos - 1 : null,
+                nextIndex: curr
+            });
         }
+    },
 
-        this.setState({
-            currIndex: newPos,
-            nextIndex: this.state.data[newPos + 1] ? newPos + 1 : null,
-            prevIndex: this.state.data[newPos - 1] ? newPos - 1 : null
-        })
+    handleGoForward: function() {
+        var newPos, curr = this.state.currIndex;
+        if (this.state.data[curr+1]) {
+            newPos = curr + 1;
+            this.setState({
+                familyId: this.state.data[newPos].family_id,
+                currIndex: newPos,
+                prevIndex: curr,
+                nextIndex: this.state.data[newPos+1] ? newPos + 1 : null
+            });
+        }
     }
 
 });

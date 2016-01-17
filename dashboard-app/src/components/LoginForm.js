@@ -200,7 +200,38 @@ var LoginForm = React.createClass({
         Utils.Store.registerCall('getStudentsFilterValues', this.getStudents,
             function(data, xhr, status) {
                 var data = JSON.parse(data).data;
-                Utils.Store.addDataToStore(data, 'studentFilters');
+                var filters = {
+                    islands: [],
+                    states: ['AL','AK','AZ','AR','CA','CO','CT','DE','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA','ME','MD','MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD','TN','TX','UT','VT','VA','WA','WV','WI','WY'],
+                    cities: [],
+                    grades: []
+                };
+
+                var islands = data[0];
+                var cities = data[1];
+                var grades = data[2];
+                var dedup = {};
+                // islands
+                for (var i = 0; i < data[0].length; i++) {
+                    filters['islands'].push(islands[i]['island_name']);
+                }
+                // cities
+                for (var i = 0; i < data[1].length; i++) {
+                    var city = cities[i]['city'];
+                    if (!dedup[city]) {
+                        dedup[city] = true;
+                        filters['cities'].push(cities[i]['city']);
+                    }
+                }
+                // grades
+                for (var i = 0; i < data[2].length; i++) {
+                    filters['grades'].push(grades[i]['grade']);
+                }
+
+                filters['grades'].sort();
+                filters['cities'].sort();
+
+                Utils.Store.addDataToStore(filters, 'studentFilters');
             },
             function(data, xhr, status) {
                 Utils.Dispatcher.dispatch('error-message', {message: 'Error getting student filter values. Server responded: ' + data.responseJSON.msg});
