@@ -136,3 +136,14 @@ input, select, .alert {
         width: 90%
     }
 }
+
+.arrow {
+    font-size: 2em;
+    margin-top: 30px;
+    cursor: pointer;
+
+    &.disabled {
+        opacity: 0.5;
+        cursor: default;
+    }
+}
