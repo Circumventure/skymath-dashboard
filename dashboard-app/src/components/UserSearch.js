@@ -78,7 +78,7 @@ var UserSearch = React.createClass({
 
             this.kidFields.map(function(field) {
                 cells.push(<div className={field + ' tableCell'}>
-                    {this.state.data[field]}
+                    {currData[field]}
                 </div>);
             });
             kidRows.push(<div className="islandRow tableRow">{cells}</div>);
