@@ -1,4 +1,6 @@
 var React = require('react');
+var Radium = require('radium');
+var Style = Radium.Style;
 
 var FormMixin = require('FormMixin');
 var InputSelect = require('InputSelect');
@@ -6,6 +8,22 @@ var Utils = require('Utils');
 
 var UserSearch = React.createClass({
     mixins: [FormMixin],
+
+    kidFields: [
+        'screenname',
+        'grade',
+        'activeIsland',
+        'curriculum',
+        'grade',
+        'islands',
+        'city',
+        'state',
+        'zipcode'
+        // skills learned?
+        // starting level island name?
+        // starting island?
+        // starting level grade equivalency ?
+    ],
 
     componentWillMount: function() {
         Utils.Dispatcher.dispatch('change-header-title', {
@@ -15,9 +33,18 @@ var UserSearch = React.createClass({
         Utils.Dispatcher.dispatch('change-menu-highlight', {
             current: 'user-search'
         });
+        Utils.Dispatcher.register('studentData-change', [], this.handleReceiveData);
     },
 
-    render: function() {
+    componentWillUnmount: function() {
+        // Restore app width
+        var container = document.querySelector('.admin-app > .line > div');
+        $(container).addClass('size9of12').removeClass('size12of12');
+    },
+
+    getInitialState: function() {
+        var filters = {};
+
         var optionsFactory = function(opts) {
             var out = [];
             opts.map(function(option) {
@@ -29,51 +56,156 @@ var UserSearch = React.createClass({
             return out;
         };
 
-        // Maybe try and get this information from the backend instead of hardcoding it 
-        // a lot of times
-        
-        var gradeOpts = optionsFactory([
-            'K', '1', '2', '3', '4', '5'
-        ]);
-
-        var islandsCompletedOpts = [];
-        for (var i = 0; i <= 40; i++) {
-            islandsCompletedOpts.push(i + '');
+        var studentFilter = Utils.Store.getStore('studentFilters');
+        for (var key in studentFilter) {
+            filters[key] = optionsFactory(studentFilter[key]);
+            filters[key].unshift({
+                label: '-- Select one --',
+                value: null
+            }, {
+                label: '-- Blank Value --',
+                value: ''
+            });
         }
 
-        islandsCompletedOpts = optionsFactory(islandsCompletedOpts);
+        return {
+            filters: filters,
+            data: []
+        };
 
-        var locationOpts = optionsFactory([
-            'location1', 'location2'
-        ]);
+    },
 
-        var schoolOpts = optionsFactory([
-            'school1', 'school2'
-        ]);
+    render: function() {
+
+        var kidData = [];
+        if (this.state.data[this.state.currIndex]) {
+            kidData = this.state.data[this.state.currIndex].kids;
+        }
+
+        var kidHeaderCells = [];
+        this.kidFields.map(function(field) {
+            kidHeaderCells.push(
+                <div className={field + ' tableCell'}>
+                    {field}
+                </div>
+            );
+        });
+
+        var kidHeader = [
+            <div className="islandRow header tableRow">
+                {kidHeaderCells}
+            </div>
+        ];
+
+        var kidRows = [];
+        var data = this.state.data;
+
+        for (var i = 0; i < data.length; i++) {
+            var currData = data[i];
+            var cells = [];
+
+            this.kidFields.map(function(field) {
+                cells.push(<div className={field + ' tableCell'}>
+                    {currData[field]}
+                </div>);
+            });
+            kidRows.push(<div className="islandRow tableRow">{cells}</div>);
+        }
 
         return (
             <div className="students-view StudentsView">
+                <Style rules={{
+                    '#MainComponent': {
+                        overflow: 'scroll'
+                    },
+                    '.UserSearch .header': {
+                        fontSize: '0.85em !important'
+                    }
+                }} />
+                <Style scopeSelector=".StudentsView"
+                    rules={{
+                        'a': {
+                            color: '#AC660E',
+                            fontSize: '.7em',
+                            textTransform: 'uppercase',
+                            fontWeight: '700',
+                            cursor: 'pointer'
+                        },
+                        '.tableRow': {
+                            display: 'table-row'
+                        },
+                        '.tableCell': {
+                            display: 'table-cell',
+                            verticalAlign: 'top'
+                        },
+                        '.filterContainers': {
+                            width: '50%',
+                            paddingBottom: '40px'
+                        },
+                        '.header': {
+                            fontWeight: '700',
+                            fontSize: '1.15em'
+                        },
+                        label: {
+                            fontSize: '1.3em',
+                            lineHeight: '2em'
+                        },
+                        '.islandRow .tableCell': {
+                            padding: '7px',
+                            borderBottom: '1px solid white'
+                        }
+                    }} />
                 <div className="line">
                     <div className="box col size10of12">
                         <div className="box col size3of12">
-                            <InputSelect label="Grade Level:" className="fieldset" options={gradeOpts} />
+                            <InputSelect label="Grade:" id="grade" className="fieldset" options={this.state.filters['grades']} />
                         </div>
                         <div className="box col size3of12">
-                            <InputSelect label="# Islands Competed:" className="fieldset" options={islandsCompletedOpts} />
+                            <InputSelect label="City:" id="city" className="fieldset" options={this.state.filters['cities']} />
                         </div>
                         <div className="box col size3of12">
-                            <InputSelect label="Location:" className="fieldset" options={locationOpts} />
-                        </div>
-                        <div className="box col size3of12">
-                            <InputSelect label="School:" className="fieldset" options={schoolOpts} />
+                            <InputSelect label="State:" id="state" className="fieldset" options={this.state.filters['states']} />
                         </div>
                     </div>
                     <div className="box col size1of12">
-                        <button className="button button--inline-right">Go</button>
+                        <button className="button button--inline-right" onClick={this.submitForm}>Go</button>
+                    </div>
+                </div>
+                <div className="line">
+                    <div className="box size12of12">
+                        {kidHeader}
+                        {kidRows}
                     </div>
                 </div>
             </div>
         );
+    },
+
+    submitForm: function() {
+        var grade = $('#grade').val();
+        var city = $('#city').val();
+        var state = $('#state').val();
+        var data = {};
+
+        if (grade !== '-- Select one --') {
+            data['grade'] = grade;
+        }
+
+        if (city !== '-- Select one --') {
+            data['city'] = city;
+        }
+
+        if (state !== '-- Select one --') {
+            data['state'] = state;
+        }
+
+        Utils.Store.makeCall('getStudents', data);
+    },
+
+    handleReceiveData: function(data) {
+        this.setState({
+            data: data
+        });
     }
 
 });

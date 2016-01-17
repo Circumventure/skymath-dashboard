@@ -207,14 +207,14 @@ var LoginForm = React.createClass({
                     grades: []
                 };
 
-                var islands = data[0];
+                // var islands = data[0];
                 var cities = data[1];
                 var grades = data[2];
                 var dedup = {};
                 // islands
-                for (var i = 0; i < data[0].length; i++) {
-                    filters['islands'].push(islands[i]['island_name']);
-                }
+                // for (var i = 0; i < data[0].length; i++) {
+                //     filters['islands'].push(islands[i]['island_name']);
+                // }
                 // cities
                 for (var i = 0; i < data[1].length; i++) {
                     var city = cities[i]['city'];
