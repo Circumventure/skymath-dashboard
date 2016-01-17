@@ -25,6 +25,9 @@ var VideoOverview = React.createClass({
             title: 'Videos:',
             subtitle: 'Edit Videos'
         });
+        Utils.Dispatcher.dispatch('change-menu-highlight', {
+            current: 'admin'
+        });
     },
 
     componentWillUnmount: function() {

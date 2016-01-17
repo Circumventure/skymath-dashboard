@@ -45,9 +45,17 @@ $activeBlue: #3fa1bc;
 .box {
     width: 100%;
 
-    &.col-2 {
+    &.col-2, &.col {
         display: inline-block;
         vertical-align: top;
+    }
+
+    &.size1of12 {
+        width: 8.33333333%;
+    }
+
+    &.size2of12 {
+        width: 16.6666666667%;
     }
 
     &.size3of12 {
@@ -109,6 +117,10 @@ $activeBlue: #3fa1bc;
 
 .float-left {
     float: left;
+}
+
+.float-right {
+    float: right;
 }
 
 .form-container {
@@ -250,7 +262,7 @@ $activeBlue: #3fa1bc;
     font-size: 20px;
     line-height: 26px;
     font-weight: 100;
-    color: #ccc;
+    color: #fff;
     margin: 10px 0 20px 0;
 
     &.h2--alert {

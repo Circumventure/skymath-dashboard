@@ -6,7 +6,9 @@ var IslandOverview = require('IslandOverview');
 var VideoOverview = require('VideoOverview');
 var AppOverview = require('AppOverview');
 var TestQuestionOverview = require('TestQuestionOverview');
+var StudentsView = require('StudentsView');
 var FormMixin = require('FormMixin');
+var UserSearch = require('UserSearch');
 var Utils = require('Utils');
 
 var MainComponentContainer = React.createClass({
@@ -43,6 +45,14 @@ var MainComponentContainer = React.createClass({
             case "test-questions":
                 return (
                     <TestQuestionOverview view={this.state.data && this.state.data.view} />
+                );
+            case "students":
+                return (
+                    <StudentsView />
+                );          
+            case "user-search":
+                return (
+                    <UserSearch />
                 );
             case "signout":
                 // Remove onbeforeunload handler when logged out

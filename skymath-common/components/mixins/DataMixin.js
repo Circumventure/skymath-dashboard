@@ -206,6 +206,26 @@ var DataMixin = {
             successFn: successFn,
             errorFn: errorFn
         });
+    },
+
+    getFamilyByEmail: function(successFn, errorFn, data) {
+        data['request'] = 'get_family_by_email';
+        this.ajaxCall({
+            method: 'POST',
+            data: data,
+            successFn: successFn,
+            errorFn: errorFn
+        });
+    },
+
+    getStudents: function(successFn, errorFn, data) {
+        data['request'] = 'get_students';
+        this.ajaxCall({
+            method: 'POST',
+            data: data,
+            successFn: successFn,
+            errorFn: errorFn
+        });
     }
 };
 
