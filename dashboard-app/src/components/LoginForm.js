@@ -202,7 +202,7 @@ var LoginForm = React.createClass({
             function(data, xhr, status) {
                 var data = JSON.parse(data).data;
                 var filters = {
-                    islands: [],
+                    zipcodes: [],
                     states: ['AL','AK','AZ','AR','CA','CO','CT','DE','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA','ME','MD','MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD','TN','TX','UT','VT','VA','WA','WV','WI','WY'],
                     cities: [],
                     grades: []
@@ -210,25 +210,33 @@ var LoginForm = React.createClass({
 
                 // var islands = data[0];
                 var cities = data[1];
-                var grades = data[2];
+                var zipcodes = data[2]
+                var grades = data[3];
                 var dedup = {};
                 // islands
                 // for (var i = 0; i < data[0].length; i++) {
                 //     filters['islands'].push(islands[i]['island_name']);
                 // }
                 // cities
-                for (var i = 0; i < data[1].length; i++) {
+                for (var i = 0; i < cities.length; i++) {
                     var city = cities[i]['city'];
                     if (!dedup[city]) {
                         dedup[city] = true;
                         filters['cities'].push(cities[i]['city']);
                     }
                 }
+
+                // zipcodes
+                for (var i = 0; i < zipcodes.length; i++) {
+                    filters['zipcodes'].push(zipcodes[i]['zipcode']);
+                }
+
                 // grades
-                for (var i = 0; i < data[2].length; i++) {
+                for (var i = 0; i < grades.length; i++) {
                     filters['grades'].push(grades[i]['grade']);
                 }
 
+                filters['zipcodes'].sort();
                 filters['grades'].sort();
                 filters['cities'].sort();
 

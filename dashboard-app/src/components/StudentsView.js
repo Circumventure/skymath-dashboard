@@ -173,6 +173,9 @@ var UserSearch = React.createClass({
                         <div className="box col size3of12">
                             <InputSelect label="State:" id="state" className="fieldset" options={this.state.filters['states']} />
                         </div>
+                        <div className="box col size3of12">
+                            <InputSelect label="Zipcode:" id="zipcode" className="fieldset" options={this.state.filters['zipcodes']} />
+                        </div>
                     </div>
                     <div className="box col size1of12">
                         <button className="button button--inline-right" onClick={this.submitForm}>Go</button>
@@ -193,6 +196,7 @@ var UserSearch = React.createClass({
         var grade = $('#grade').val();
         var city = $('#city').val();
         var state = $('#state').val();
+        var zipcode = $('#zipcode').val();
         var data = {};
 
         if (grade !== '-- Select one --') {
@@ -205,6 +209,10 @@ var UserSearch = React.createClass({
 
         if (state !== '-- Select one --') {
             data['state'] = state;
+        }
+
+        if (zipcode !== '-- Select one --') {
+            data['zipcode'] = zipcode;
         }
 
         Utils.Store.makeCall('getStudents', data);
