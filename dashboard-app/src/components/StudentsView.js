@@ -112,6 +112,28 @@ var UserSearch = React.createClass({
             var cells = [];
 
             this.kidFields.map(function(field) {
+                if (field === 'curriculum') {
+                    // format curriculum more nicely
+                    output = [];
+                    var curriculumData = JSON.parse(currData['curriculum']) || [];
+                    for (var j = 0; j < curriculumData.length; j++) {
+                        output.push(
+                            <li>
+                                {curriculumData[j].name}
+                            </li>
+                        );
+                    }
+                    currData['curriculum'] = output;
+                }
+
+                if (field === 'activeIsland') {
+                    var islandList = Utils.Store.getStore('islandList');
+                    for (var j = 0; j < islandList.length; j++) {
+                        if (islandList[j].id == currData[field]) {
+                            currData[field] = islandList[j].island_name;
+                        }
+                    }
+                }
                 cells.push(<div className={field + ' tableCell'}>
                     {currData[field]}
                 </div>);
