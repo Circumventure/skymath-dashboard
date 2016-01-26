@@ -77,6 +77,29 @@ var UserSearch = React.createClass({
             var cells = [];
 
             this.kidFields.map(function(field) {
+                if (field === 'curriculum') {
+                    // format curriculum more nicely
+                    output = [];
+                    var curriculumData = currData['curriculum'] || [];
+                    for (var j = 0; j < curriculumData.length; j++) {
+                        output.push(
+                            <li>
+                                {curriculumData[j].name}
+                            </li>
+                        );
+                    }
+                    currData['curriculum'] = output;
+                }
+
+                if (field === 'activeIsland') {
+                    var islandList = Utils.Store.getStore('islandList');
+                    for (var j = 0; j < islandList.length; j++) {
+                        if (islandList[j].id == currData[field]) {
+                            currData[field] = islandList[j].island_name;
+                        }
+                    }
+                }
+
                 cells.push(<div className={field + ' tableCell'}>
                     {currData[field]}
                 </div>);
@@ -137,10 +160,6 @@ var UserSearch = React.createClass({
                     <div className="display-inline-block family-info" style={{ marginRight: '20px' }}>
                         <h2 className="h2">Family Id</h2>
                         <p className="h3">{this.state.familyId}</p>
-                    </div>
-                    <div className="display-inline-block float-right controls">
-                        <p className={'arrow display-inline-block ' + (this.state.prevIndex === null ? 'disabled' : '')} id="goBack" onClick={this.handleGoBack}>{String.fromCharCode(9664)}</p>
-                        <p className={"arrow display-inline-block " + (this.state.nextIndex === null ? 'disabled' : '')} id="goForward" onClick={this.handleGoForward}>{String.fromCharCode(9654)}</p>
                     </div>
                 </div>
                 <div className="line">

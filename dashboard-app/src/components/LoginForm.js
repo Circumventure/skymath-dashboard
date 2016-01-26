@@ -177,6 +177,7 @@ var LoginForm = React.createClass({
         Utils.Store.registerCall('getFamilyByEmail', this.getFamilyByEmail,
             function(data, xhr, status, origData) {
                 var data = JSON.parse(data).data;
+                Utils.Store.removeStore('familyData');
                 if (data.family && !Array.isArray(data.family)) {
                     data.family = [data.family];
                 }
