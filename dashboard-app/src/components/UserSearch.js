@@ -13,9 +13,10 @@ var UserSearch = React.createClass({
         'screenname',
         'grade',
         'activeIsland',
+        'completedIslands',
         'curriculum',
         'grade',
-        'islands'
+        // 'islands'
         // skills learned?
         // starting level island name?
         // starting island?
@@ -76,29 +77,28 @@ var UserSearch = React.createClass({
             var currData = kidData[i];
             var cells = [];
 
-            this.kidFields.map(function(field) {
-                if (field === 'curriculum') {
-                    // format curriculum more nicely
-                    output = [];
-                    var curriculumData = currData['curriculum'] || [];
-                    for (var j = 0; j < curriculumData.length; j++) {
-                        output.push(
-                            <li>
-                                {curriculumData[j].name}
-                            </li>
-                        );
-                    }
-                    currData['curriculum'] = output;
-                }
+            var curriculumData = currData['curriculum'] || [];
 
-                if (field === 'activeIsland') {
-                    var islandList = Utils.Store.getStore('islandList');
-                    for (var j = 0; j < islandList.length; j++) {
-                        if (islandList[j].id == currData[field]) {
-                            currData[field] = islandList[j].island_name;
-                        }
-                    }
-                }
+            // format curriculum more nicely
+            output = [];
+            for (var j = 0; j < curriculumData.length; j++) {
+                output.push(
+                    <li>
+                        {curriculumData[j].name}
+                    </li>
+                );
+            }
+            currData['curriculum'] = output;
+
+            // Active island is index of curriculum
+            var activeIsland = currData['activeIsland'];
+
+            // Completed islands is active island
+            currData['completedIslands'] = activeIsland && parseInt(activeIsland, 10)
+
+            currData['activeIsland'] = curriculumData[activeIsland] && curriculumData[activeIsland].name
+
+            this.kidFields.map(function(field) {
 
                 cells.push(<div className={field + ' tableCell'}>
                     {currData[field]}
