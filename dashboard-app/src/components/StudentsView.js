@@ -112,7 +112,12 @@ var UserSearch = React.createClass({
             var currData = data[i];
             var cells = [];
 
-            var curriculumData = JSON.parse(currData['curriculum']) || [];
+            var curriculumData;
+            if (typeof currData['curriculum'] === 'string') {
+                curriculumData = JSON.parse(currData['curriculum']) || [];
+            } else {
+                curriculumData = currData['curriculum'] || [];
+            }
 
             // format curriculum more nicely
             output = [];
