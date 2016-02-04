@@ -119,6 +119,7 @@ var LoginForm = React.createClass({
                 var storeName = 'testQuestionList-' + islandName;
                 Utils.Store.addDataToStore(JSON.parse(data).data.questions, storeName);
 
+
                 // Update question_id to island_name map
                 var newMap = {};
                 var storeSource = Utils.Store.getStore(storeName);
@@ -171,7 +172,85 @@ var LoginForm = React.createClass({
             function(data, xhr, status) {
                 Utils.Dispatcher.dispatch('error-message', {message: 'Error deleting question. Server responded: ' + data.responseJSON.msg});
             }
-    );
+        );
+
+        Utils.Store.registerCall('getFamilyByEmail', this.getFamilyByEmail,
+            function(data, xhr, status, origData) {
+                var data = JSON.parse(data).data;
+                Utils.Store.removeStore('familyData');
+                if (data.family && !Array.isArray(data.family)) {
+                    data.family = [data.family];
+                }
+                Utils.Store.addDataToStore(data.family, 'familyData');
+            },
+            function(data, xhr, status) {
+                Utils.Dispatcher.dispatch('error-message', {message: 'Error getting family. Server responded: ' + data.responseJSON.msg});
+            }
+        );
+
+        Utils.Store.registerCall('getStudents', this.getStudents,
+            function(data, xhr, status, origData) {
+                var data = JSON.parse(data).data;
+                Utils.Store.removeStore('studentData');
+                Utils.Store.addDataToStore(data, 'studentData');
+            },
+            function(data, xhr, status) {
+                Utils.Dispatcher.dispatch('error-message', {message: 'Error getting students. Server responded: ' + data.responseJSON.msg});
+            }
+        );
+
+        Utils.Store.registerCall('getStudentsFilterValues', this.getStudents,
+            function(data, xhr, status) {
+                var data = JSON.parse(data).data;
+                var filters = {
+                    zipcodes: [],
+                    states: ['AL','AK','AZ','AR','CA','CO','CT','DE','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA','ME','MD','MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD','TN','TX','UT','VT','VA','WA','WV','WI','WY'],
+                    cities: [],
+                    grades: []
+                };
+
+                // var islands = data[0];
+                var cities = data[1];
+                var zipcodes = data[2]
+                var grades = data[3];
+                var dedup = {};
+                // islands
+                // for (var i = 0; i < data[0].length; i++) {
+                //     filters['islands'].push(islands[i]['island_name']);
+                // }
+                // cities
+                for (var i = 0; i < cities.length; i++) {
+                    var city = cities[i]['city'];
+                    if (!dedup[city]) {
+                        dedup[city] = true;
+                        filters['cities'].push(cities[i]['city']);
+                    }
+                }
+
+                // zipcodes
+                for (var i = 0; i < zipcodes.length; i++) {
+                    filters['zipcodes'].push(zipcodes[i]['zipcode']);
+                }
+
+                // grades
+                for (var i = 0; i < grades.length; i++) {
+                    filters['grades'].push(grades[i]['grade']);
+                }
+
+                filters['zipcodes'].sort();
+                filters['grades'].sort();
+                filters['cities'].sort();
+
+                Utils.Store.addDataToStore(filters, 'studentFilters');
+            },
+            function(data, xhr, status) {
+                Utils.Dispatcher.dispatch('error-message', {message: 'Error getting student filter values. Server responded: ' + data.responseJSON.msg});
+            },
+            true,
+            {
+                'pre_flight': true
+            }
+        );
     },
 
     handleError: function(data, status, xhr) {

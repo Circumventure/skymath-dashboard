@@ -25,6 +25,9 @@ var IslandOverview = React.createClass({
             title: 'Islands:',
             subtitle: 'Edit Islands'
         });
+        Utils.Dispatcher.dispatch('change-menu-highlight', {
+            current: 'admin'
+        });
     },
 
     componentWillUnmount: function() {

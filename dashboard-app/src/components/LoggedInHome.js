@@ -12,6 +12,9 @@ var LoggedInHome = React.createClass({
         } else {
             this.loadData(Utils.Store.getStore('statistics'));
         }
+        Utils.Dispatcher.dispatch('change-menu-highlight', {
+            current: 'dashboard'
+        });
     },
 
     getInitialState: function() {

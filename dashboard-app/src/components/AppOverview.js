@@ -25,6 +25,9 @@ var AppOverview = React.createClass({
             name: 'Apps:',
             subname: 'Edit Apps'
         });
+        Utils.Dispatcher.dispatch('change-menu-highlight', {
+            current: 'admin'
+        });
     },
 
     componentWillUnmount: function() {
